@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">F18 Sales</string>
+    <string name="title_activity_salesmen_management">SalesmenManagementActivity</string>
+    <string name="tab_text_add">Add</string>
+    <string name="tab_text_modify">Modify</string>
+    <string name="tab_text_delete">Delete</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

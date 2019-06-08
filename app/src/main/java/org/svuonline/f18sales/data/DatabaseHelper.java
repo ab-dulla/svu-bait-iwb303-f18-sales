@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
 import org.svuonline.f18sales.model.Region;
+import org.svuonline.f18sales.model.Sale;
 import org.svuonline.f18sales.model.Salesman;
 
 import java.util.ArrayList;
@@ -210,5 +211,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         return salesmen;
+    }
+
+    public long InsertSale(Sale sale) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.insert(SalesEntry.TABLE_NAME, null, sale.ToContentValues());
     }
 }

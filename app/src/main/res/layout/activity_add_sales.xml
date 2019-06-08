@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".AddSalesActivity">
     android:textDirection="rtl">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -38,11 +37,6 @@
                 android:spinnerMode="dropdown"
                 style="@style/spinner_style"
                 android:textDirection="rtl"/>
-
-
-
-
-
         </LinearLayout>
 
         <LinearLayout
@@ -50,35 +44,30 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:textDirection="rtl">
-
             <EditText
                 android:id="@+id/txtAmount"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight=".50"
                 style="@style/text_style"
                 android:inputType="number"
-                android:hint="-- المبلغ --"
+                android:hint="-- المبلغ (ل.س) --"
+
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layoutDirection="rtl"
                 android:textDirection="rtl"
                 app:layout_constraintTop_toBottomOf="@+id/spinnerSalesmen" />
 
-
-
-
-
-
             <EditText
                 android:id="@+id/txtSaleDate"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:focusable="false"
-                android:layout_weight="2"
+                android:layout_weight=".50"
                 android:hint="-- تاريخ العملية --"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -86,36 +75,7 @@
                 android:textDirection="rtl"
                 style="@style/text_style"
                 app:layout_constraintTop_toBottomOf="@+id/txtAmount" />
-
-            <!--style="@style/text_style"-->
-
-
-
-
-
-
-            <!--<Spinner
-                android:id="@+id/spinnerMonths"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_weight="2"
-                android:spinnerMode="dropdown"
-                style="@style/spinner_style"
-                android:layoutDirection="rtl"
-                android:textDirection="rtl"/>
-
-            <Spinner
-                android:id="@+id/spinnerYears"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:spinnerMode="dropdown"
-                android:layout_weight="2"
-                style="@style/spinner_style"
-                android:layoutDirection="rtl"
-                android:textDirection="rtl"/>-->
-
         </LinearLayout>
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -131,23 +91,6 @@
                 android:textColor="@android:color/white"
                 android:text="حفظ"
                 android:textSize="14sp" />
-
-
         </RelativeLayout >
-
-        <!--<EditText-->
-            <!--android:id="@+id/editText"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:ems="10"-->
-            <!--android:inputType="number"-->
-            <!--style="@style/text_style"/>-->
-
-
-
-
-
-
     </LinearLayout>
-
 </android.support.constraint.ConstraintLayout>

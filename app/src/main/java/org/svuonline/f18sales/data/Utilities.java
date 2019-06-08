@@ -2,15 +2,31 @@ package org.svuonline.f18sales.data;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.view.View;
+import android.widget.DatePicker;
 import android.widget.Spinner;
+
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.ArrayList;
+import java.util.Locale;
+
 import android.widget.ArrayAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.app.Application;
 import android.content.Context;
 
+import org.svuonline.f18sales.salesmen.management.AddSalesmanFragment;
+
+import android.widget.EditText;
+
 public class Utilities extends Activity {
+
+    private static final String DATE_FORMAT = "MM/dd/yyyy";
+    private static final Locale LOCAL_DATE_FORMAT = Locale.US;
+
+
 
     public static ArrayList<String> GetYearsList()
     {
@@ -51,4 +67,32 @@ public class Utilities extends Activity {
                 .setMessage(Message)
                 .show();
     }
+
+
+    public static void InitSaleDateCalender(Context cont,EditText tDate) {
+
+        final EditText txtDate = tDate;
+        final Context context = cont;
+        final Calendar calendar = Calendar.getInstance();
+        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, monthOfYear);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                // update calender
+                SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, LOCAL_DATE_FORMAT);
+                txtDate.setText(sdf.format(calendar.getTime()));
+            }
+        };
+        txtDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialog(context, date, calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+    }
+
+
 }

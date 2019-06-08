@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
@@ -31,8 +32,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "FOREIGN KEY(" + SalesmanEntry.REGION_ID + ") REFERENCES " + RegionEntry.TABLE_NAME + "(" + RegionEntry._ID + ")"
             + ");";
 
-    private static final String SQL_DELETE_SALESMAN = "DROP TABLE IF EXISTS " + SalesmanEntry.TABLE_NAME;
+    private static final String SQL_CREATE_SALES = "CREATE TABLE " + SalesEntry.TABLE_NAME + "("
+            + SalesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + SalesEntry.SALESMAN_ID + " INTEGER NOT NULL, "
+            + SalesEntry.SALE_DATE + " TEXT NOT NULL, "
+            + SalesEntry.AMOUNT + " INTEGER,"
+            + " FOREIGN KEY(" + SalesEntry.SALESMAN_ID + ") REFERENCES " + SalesmanEntry.TABLE_NAME + "(" + SalesmanEntry._ID + ")"
+            + ");";
 
+    private static final String SQL_DELETE_SALESMAN = "DROP TABLE IF EXISTS " + SalesmanEntry.TABLE_NAME;
+    private static final String SQL_DELETE_SALES = "DROP TABLE IF EXISTS " + SalesEntry.TABLE_NAME;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -42,6 +51,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_REGIONS);
         db.execSQL(SQL_CREATE_SALESMAN);
+        db.execSQL(SQL_CREATE_SALES);
         insertDefaultRegions(db);
     }
 
@@ -49,6 +59,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(SQL_DELETE_REGIONS);
         db.execSQL(SQL_DELETE_SALESMAN);
+        db.execSQL(SQL_DELETE_SALES);
         onCreate(db);
     }
 
@@ -119,10 +130,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         while (cursor.moveToNext()) {
             int id = cursor.getInt(0);
             String fullName = cursor.getString(1);
-            int regionId = cursor.getInt(2);
-            String hiringDate = cursor.getString(3);
-//            byte[] image = cursor.getBlob(4);
-            salesmen.add(new Salesman(id, fullName, regionId, hiringDate, new byte[]{}));
+            int regionId = cursor.getInt(3);
+            String hiringDate = cursor.getString(2);
+            byte[] image = cursor.getBlob(4);
+            salesmen.add(new Salesman(id, fullName, regionId, hiringDate,image));
+//            salesmen.add(new Salesman(id, fullName, regionId, hiringDate, new byte[]{}));
         }
         cursor.close();
         return salesmen;
@@ -161,8 +173,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static class SalesEntry implements BaseColumns {
         public static final String TABLE_NAME = "sales";
+        public static final String SALESMAN_ID = "salesman_id";
         public static final String AMOUNT = "amount";
+        public static final String SALE_DATE = "sale_date";
         public static final String MONTH = "month";
         public static final String YEAR = "year";
+    }
+
+
+
+    // Rami
+    public Salesman getSalesmenById(Integer id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectSql = "SELECT *"
+                + " FROM " + SalesmanEntry.TABLE_NAME
+                + " where _id=" + id.toString();
+        Cursor cursor = db.rawQuery(selectSql, null);
+        ArrayList<Salesman> salesmen = parseSalesmen(cursor);
+        cursor.close();
+        return salesmen.get(0);
+}
+
+    // Rami
+    public ArrayList<Salesman> getSalesmenList(SQLiteDatabase db) {
+        String selectSql = "SELECT "
+                + DatabaseHelper.SalesmanEntry._ID + ", "
+                + DatabaseHelper.SalesmanEntry.FULL_NAME
+                + " FROM " + DatabaseHelper.SalesmanEntry.TABLE_NAME;
+        Cursor cursor = db.rawQuery(selectSql, null);
+        ArrayList<Salesman> salesmen = new ArrayList<>();
+        salesmen.add(new Salesman(-1, "-- اسم المندوب --"));
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(0);
+            String fullName = cursor.getString(1);
+            salesmen.add(new Salesman(id, fullName));
+        }
+        cursor.close();
+        return salesmen;
     }
 }

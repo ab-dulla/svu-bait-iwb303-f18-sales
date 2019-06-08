@@ -18,6 +18,7 @@ public class Salesman {
     private final byte[] image;
     private final Integer newId;
 
+
     // constructor used for initializing a salesman for UPDATE sql command
     public Salesman(Integer id, String fullName, int regionId, String hiringDate, byte[] image, Integer newId) {
         this.id = id;
@@ -36,6 +37,11 @@ public class Salesman {
     // constructor used for initializing salesmen after reading them from the DB
     public Salesman(Integer id, String fullName, int regionId, String hiringDate, byte[] image) {
         this(id, fullName, regionId, hiringDate, image, null);
+    }
+
+    //Rami
+    public Salesman(Integer id, String fullName) {
+        this(id, fullName,1,null,null);
     }
 
     public Integer getId() {

@@ -284,9 +284,29 @@
                     </TableRow>
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="wrap_content">
 
-                    </TableRow>
+
+
+
+
+
+            <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+                    <TableLayout
+                        android:id="@+id/tableInvoices"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="0dp"
+                        android:stretchColumns="*">
+                    </TableLayout>
+            </ScrollView>
+
+
+
+
+        </TableRow>
                 </TableLayout>
 
                 <!---->

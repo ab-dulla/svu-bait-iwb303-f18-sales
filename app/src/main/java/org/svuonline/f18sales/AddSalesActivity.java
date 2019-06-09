@@ -10,8 +10,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import org.svuonline.f18sales.data.DatabaseHelper;
 import org.svuonline.f18sales.data.Utilities;
+import org.svuonline.f18sales.model.Region;
 import org.svuonline.f18sales.model.Sale;
 import org.svuonline.f18sales.model.Salesman;
+import org.svuonline.f18sales.salesmen.management.RegionSpinnerArrayAdapter;
 import org.svuonline.f18sales.salesmen.management.SalesmenSpinnerArrayAdapter;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -24,6 +26,7 @@ public class AddSalesActivity extends AppCompatActivity implements View.OnClickL
      **************        Declarations       *************
      ******************************************************/
     private Spinner spinnerSalesmen;
+    private Spinner spinnerRegoins;
     private EditText txtSaleDate;
     private EditText txtAmount;
     private Button btnSave;
@@ -40,9 +43,11 @@ public class AddSalesActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_add_sales);
         getSupportActionBar().setTitle("إضافة مبيعات");
         dbHelper = new DatabaseHelper(this);
+        db = openOrCreateDatabase("f18SalesDb",Context.MODE_PRIVATE, null);
         FindElements();
         SetControlsEvents();
-        fillSalesmen();
+        FillSalesmen();
+        FillRegions();
         Utilities.InitSaleDateCalender(this,txtSaleDate);
     }
 
@@ -75,12 +80,14 @@ public class AddSalesActivity extends AppCompatActivity implements View.OnClickL
     private boolean ValidateInputs(){
 
         return spinnerSalesmen.getSelectedItemPosition() != 0 &&
+                spinnerRegoins.getSelectedItemPosition() != 0 &&
                 !isEmpty(txtSaleDate.getText().toString()) &&
                 !isEmpty(txtAmount.getText().toString()) ;
     }
 
     private void FindElements(){
         spinnerSalesmen = findViewById(R.id.spinnerSalesmen);
+        spinnerRegoins = findViewById(R.id.spinnerRegoins);
         txtSaleDate =findViewById(R.id.txtSaleDate);
         txtAmount =findViewById(R.id.txtAmount);
         btnSave = findViewById(R.id.btnSave);
@@ -91,25 +98,39 @@ public class AddSalesActivity extends AppCompatActivity implements View.OnClickL
         btnSave.setOnClickListener(this);
     }
 
-    private void fillSalesmen() {
-        db = openOrCreateDatabase("f18SalesDb",Context.MODE_PRIVATE, null);
-        ArrayList<Salesman> salesmenList =  dbHelper.getSalesmenList(db);
+    private void FillSalesmen() {
+        //db = openOrCreateDatabase("f18SalesDb",Context.MODE_PRIVATE, null);
+//        ArrayList<Salesman> salesmenList =  dbHelper.getSalesmenList(db);
+        ArrayList<Salesman> salesmenList =  dbHelper.getSalesmenList();
         SalesmenSpinnerArrayAdapter salesmenAdapter = new SalesmenSpinnerArrayAdapter(this, salesmenList);
         spinnerSalesmen.setAdapter(salesmenAdapter);
+    }
+
+    private void FillRegions() {
+        //db = openOrCreateDatabase("f18SalesDb",Context.MODE_PRIVATE, null);
+        ArrayList<Region> regionsList =  dbHelper.getAllRegions();
+        RegionSpinnerArrayAdapter regionAdapter = new RegionSpinnerArrayAdapter(this, regionsList);
+        spinnerRegoins.setAdapter(regionAdapter);
+
     }
 
     private boolean addSale() {
         Salesman selectedSalesman = (Salesman) spinnerSalesmen.getSelectedItem();
         int salesmanId = selectedSalesman.getId();
+
+        Region selectedRegion = (Region) spinnerRegoins.getSelectedItem();
+        int regionId = selectedRegion.getId();
+
         String saleDate = txtSaleDate.getText().toString();
         int amount =Integer.parseInt(txtAmount.getText().toString());
-        Sale sale = new Sale(salesmanId,saleDate,amount);
+        Sale sale = new Sale(salesmanId,regionId,saleDate,amount);
         return dbHelper.InsertSale(sale) != -1;
     }
 
     private void ClearInputs()
     {
         spinnerSalesmen.setSelection(0);
+        spinnerRegoins.setSelection(0);
         txtAmount.setText("");
         txtSaleDate.setText("");
     }

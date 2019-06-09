@@ -36,9 +36,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_SALES = "CREATE TABLE " + SalesEntry.TABLE_NAME + "("
             + SalesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + SalesEntry.SALESMAN_ID + " INTEGER NOT NULL, "
+            + SalesEntry.REGION_ID + " INTEGER NOT NULL, "
             + SalesEntry.SALE_DATE + " TEXT NOT NULL, "
             + SalesEntry.AMOUNT + " INTEGER,"
-            + " FOREIGN KEY(" + SalesEntry.SALESMAN_ID + ") REFERENCES " + SalesmanEntry.TABLE_NAME + "(" + SalesmanEntry._ID + ")"
+            + " FOREIGN KEY(" + SalesEntry.SALESMAN_ID + ") REFERENCES " + SalesmanEntry.TABLE_NAME + "(" + SalesmanEntry._ID + "),"
+            + " FOREIGN KEY(" + SalesEntry.REGION_ID + ") REFERENCES " + RegionEntry.TABLE_NAME + "(" + RegionEntry._ID + ")"
             + ");";
 
     private static final String SQL_DELETE_SALESMAN = "DROP TABLE IF EXISTS " + SalesmanEntry.TABLE_NAME;
@@ -81,6 +83,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private ArrayList<Region> parseRegions(Cursor cursor) {
         ArrayList<Region> regions = new ArrayList<>();
+        regions.add(new Region(-1, "-- المنطقة --"));
         while (cursor.moveToNext()) {
             int id = cursor.getInt(0);
             String name = cursor.getString(1);
@@ -175,6 +178,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static class SalesEntry implements BaseColumns {
         public static final String TABLE_NAME = "sales";
         public static final String SALESMAN_ID = "salesman_id";
+        public static final String REGION_ID = "region_id";
         public static final String AMOUNT = "amount";
         public static final String SALE_DATE = "sale_date";
         public static final String MONTH = "month";
@@ -196,7 +200,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 }
 
     // Rami
-    public ArrayList<Salesman> getSalesmenList(SQLiteDatabase db) {
+//    public ArrayList<Salesman> getSalesmenList(SQLiteDatabase db) {
+    public ArrayList<Salesman> getSalesmenList() {
+        SQLiteDatabase db = this.getReadableDatabase();
         String selectSql = "SELECT "
                 + DatabaseHelper.SalesmanEntry._ID + ", "
                 + DatabaseHelper.SalesmanEntry.FULL_NAME
@@ -216,5 +222,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public long InsertSale(Sale sale) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.insert(SalesEntry.TABLE_NAME, null, sale.ToContentValues());
+    }
+
+
+    public ArrayList<Sale> GetSalesmanSales(int salesmanId,String year,String month) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectSql =
+                "SELECT R.name, S.amount" +
+                " FROM sales as S inner join region as R on S.region_id=R._id" +
+                " where S.salesman_id="+salesmanId +
+                " and substr(S.sale_date,7)='" +year+ "'" +
+                " and substr(S.sale_date,1,2) ='" + month+ "'";
+
+//
+//                "SELECT "
+//                + RegionEntry.NAME + ", "
+//                + SalesEntry.AMOUNT
+//                + " FROM " + SalesEntry.TABLE_NAME + " inner join " + RegionEntry.TABLE_NAME + " on " + SalesEntry.REGION_ID + "=" + RegionEntry._ID
+//                + " where " + SalesEntry.SALESMAN_ID + "=" + salesmanId
+//                + " and year(" + SalesEntry.SALE_DATE +")=" + year
+//                + " and month(" + SalesEntry.SALE_DATE +")=" + month;
+        Cursor cursor = db.rawQuery(selectSql, null);
+        ArrayList<Sale> salesList = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            String RegionName = cursor.getString(0);
+            int Amount = cursor.getInt(1);
+            salesList.add(new Sale(RegionName, Amount));
+        }
+        cursor.close();
+        return salesList;
     }
 }

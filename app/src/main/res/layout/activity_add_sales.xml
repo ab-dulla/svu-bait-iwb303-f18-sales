@@ -44,6 +44,21 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:textDirection="rtl">
+
+            <Spinner
+                android:id="@+id/spinnerRegoins"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:spinnerMode="dropdown"
+                style="@style/spinner_style"
+                android:textDirection="rtl"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:textDirection="rtl">
             <EditText
                 android:id="@+id/txtAmount"
                 android:layout_width="0dp"

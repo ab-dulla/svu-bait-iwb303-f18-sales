@@ -18,6 +18,7 @@ import android.support.v7.widget.AppCompatSpinner;
 import org.svuonline.f18sales.data.DatabaseHelper;
 import org.svuonline.f18sales.data.Utilities;
 import org.svuonline.f18sales.model.Region;
+import org.svuonline.f18sales.model.Sale;
 import org.svuonline.f18sales.model.Salesman;
 import org.svuonline.f18sales.salesmen.management.AddSalesmanFragment;
 import org.svuonline.f18sales.salesmen.management.RegionSpinnerArrayAdapter;
@@ -81,8 +82,13 @@ public class SalesActivity extends AppCompatActivity implements View.OnClickList
             case R.id.btnSearch:
                 if(ValidateInputs())
                 {
+
+
+
                     Salesman selectedSalesman = (Salesman) spinnerSalesmen.getSelectedItem();
                     selectedSalesman = dbHelper.getSalesmenById(selectedSalesman.getId());
+
+                    ArrayList<Sale> salesList = dbHelper.GetSalesmanSales(selectedSalesman.getId(),spinnerYears.getSelectedItem().toString(),spinnerMonths.getSelectedItem().toString());
 
                     txtId.setText(selectedSalesman.getId().toString());
                     txtName.setText(selectedSalesman.getFullName());
@@ -134,7 +140,8 @@ public class SalesActivity extends AppCompatActivity implements View.OnClickList
 
     private void fillSalesmen() {
         db = openOrCreateDatabase("f18SalesDb",Context.MODE_PRIVATE, null);
-        ArrayList<Salesman> salesmenList =  dbHelper.getSalesmenList(db);
+//        ArrayList<Salesman> salesmenList =  dbHelper.getSalesmenList(db);
+        ArrayList<Salesman> salesmenList =  dbHelper.getSalesmenList();
         SalesmenSpinnerArrayAdapter salesmenAdapter = new SalesmenSpinnerArrayAdapter(this, salesmenList);
         spinnerSalesmen.setAdapter(salesmenAdapter);
     }

@@ -43,8 +43,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + " FOREIGN KEY(" + SalesEntry.REGION_ID + ") REFERENCES " + RegionEntry.TABLE_NAME + "(" + RegionEntry._ID + ")"
             + ");";
 
+    private static final String SQL_CREATE_COMMESSIONS = "CREATE TABLE " + CommissionsEntry.TABLE_NAME + "("
+            + CommissionsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + CommissionsEntry.SALESMAN_ID + " INTEGER NOT NULL, "
+            + CommissionsEntry.REGION_ID + " INTEGER NOT NULL, "
+            + CommissionsEntry.YEAR + " TEXT NOT NULL, "
+            + CommissionsEntry.MONTH + " TEXT NOT NULL, "
+            + CommissionsEntry.AMOUNT + " INTEGER,"
+            + " FOREIGN KEY(" + CommissionsEntry.SALESMAN_ID + ") REFERENCES " + SalesmanEntry.TABLE_NAME + "(" + SalesmanEntry._ID + "),"
+            + " FOREIGN KEY(" + CommissionsEntry.REGION_ID + ") REFERENCES " + RegionEntry.TABLE_NAME + "(" + RegionEntry._ID + ")"
+            + ");";
+
     private static final String SQL_DELETE_SALESMAN = "DROP TABLE IF EXISTS " + SalesmanEntry.TABLE_NAME;
     private static final String SQL_DELETE_SALES = "DROP TABLE IF EXISTS " + SalesEntry.TABLE_NAME;
+    private static final String SQL_DELETE_COMMESSIONS = "DROP TABLE IF EXISTS " + CommissionsEntry.TABLE_NAME;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -170,6 +182,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static class CommissionsEntry implements BaseColumns {
         public static final String TABLE_NAME = "commissions";
+        public static final String SALESMAN_ID = "salesmanId";
+        public static final String REGION_ID = "regionId";
         public static final String AMOUNT = "amount";
         public static final String MONTH = "month";
         public static final String YEAR = "year";
@@ -181,8 +195,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String REGION_ID = "region_id";
         public static final String AMOUNT = "amount";
         public static final String SALE_DATE = "sale_date";
-        public static final String MONTH = "month";
-        public static final String YEAR = "year";
+//        public static final String MONTH = "month";
+//        public static final String YEAR = "year";
     }
 
 
@@ -227,12 +241,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public ArrayList<Sale> GetSalesmanSales(int salesmanId,String year,String month) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String selectSql =
+        /*String selectSql =
                 "SELECT R.name, S.amount" +
                 " FROM sales as S inner join region as R on S.region_id=R._id" +
                 " where S.salesman_id="+salesmanId +
                 " and substr(S.sale_date,7)='" +year+ "'" +
-                " and substr(S.sale_date,1,2) ='" + month+ "'";
+                " and substr(S.sale_date,1,2) ='" + month+ "'";*/
+
+
+        String selectSql =
+        "SELECT R.name as RegionName, IFNULL(SUM(S.amount),0) AS 'Amount'" +
+        " FROM region as R"+
+        " LEFT JOIN "+
+        "(" +
+                "SELECT region_id,amount FROM sales" +
+                " where salesman_id="+salesmanId +
+                " and substr( sale_date,7)='" +year+
+                "' and substr(sale_date,1,2) ='" + month+ "'" +
+        ") as S"+
+        " ON  S.region_id=R._id"+
+        " GROUP BY R.name"+
+        " order by Amount desc";
+
+
 
 //
 //                "SELECT "
@@ -252,4 +283,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return salesList;
     }
+
+
+
+
+    public int GetSalesmanTotalSalesByRegionAndYearAndMoth(int salesmanId,int regionId,String year,String month) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectSql =
+            "SELECT SUM(S.amount)as Amount " +
+            "FROM region as R " +
+            "inner join sales as S on S.region_id=R._id " +
+            " where S.salesman_id="+salesmanId +
+            " and substr( sale_date,7)='" +year+
+            "' and substr(sale_date,1,2) ='" + month+ "'" +
+            " and R._id = " +regionId+
+            " group by R._id";
+        Cursor cursor = db.rawQuery(selectSql, null);
+        int totalAmount = 0;
+        if(cursor.getCount()>0)
+        {
+            cursor.moveToNext();
+            totalAmount = cursor.getInt(0);
+        }
+        cursor.close();
+        return totalAmount;
+    }
+
 }

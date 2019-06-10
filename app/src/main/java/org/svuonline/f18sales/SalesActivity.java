@@ -1,10 +1,6 @@
 package org.svuonline.f18sales;
 
-import android.app.Activity;
-import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,30 +9,21 @@ import android.widget.Spinner;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ImageView;
-import android.support.v7.widget.AppCompatSpinner;
-
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import org.svuonline.f18sales.data.DatabaseHelper;
 import org.svuonline.f18sales.data.Utilities;
-import org.svuonline.f18sales.model.Region;
 import org.svuonline.f18sales.model.Sale;
 import org.svuonline.f18sales.model.Salesman;
-import org.svuonline.f18sales.salesmen.management.AddSalesmanFragment;
-import org.svuonline.f18sales.salesmen.management.RegionSpinnerArrayAdapter;
 import org.svuonline.f18sales.salesmen.management.SalesmenSpinnerArrayAdapter;
-
 import java.util.ArrayList;
-import java.util.Locale;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.support.annotation.NonNull;
+import android.widget.TableRow.LayoutParams;
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-
-
-import android.support.v4.app.Fragment;
-import android.widget.Toast;
-
-import org.svuonline.f18sales.data.Utilities;
 
 public class SalesActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -53,6 +40,7 @@ public class SalesActivity extends AppCompatActivity implements View.OnClickList
     private TextView txtMonth;
     private TextView txtHiringDate;
     private ImageView imgSalesman;
+    TableLayout tableRegionsSales;
     DatabaseHelper dbHelper;
     SQLiteDatabase db;
 
@@ -65,7 +53,7 @@ public class SalesActivity extends AppCompatActivity implements View.OnClickList
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sales);
-        getSupportActionBar().setTitle("المبيعات والعمولات");
+        getSupportActionBar().setTitle("المبيعات");
         dbHelper = new DatabaseHelper(this);
 
         FindElements();
@@ -82,23 +70,10 @@ public class SalesActivity extends AppCompatActivity implements View.OnClickList
             case R.id.btnSearch:
                 if(ValidateInputs())
                 {
-
-
-
                     Salesman selectedSalesman = (Salesman) spinnerSalesmen.getSelectedItem();
                     selectedSalesman = dbHelper.getSalesmenById(selectedSalesman.getId());
-
-                    ArrayList<Sale> salesList = dbHelper.GetSalesmanSales(selectedSalesman.getId(),spinnerYears.getSelectedItem().toString(),spinnerMonths.getSelectedItem().toString());
-
-                    txtId.setText(selectedSalesman.getId().toString());
-                    txtName.setText(selectedSalesman.getFullName());
-                    txtHiringDate.setText(selectedSalesman.getHiringDate().toString());
-                    txtYear.setText(spinnerYears.getSelectedItem().toString());
-                    txtMonth.setText(spinnerMonths.getSelectedItem().toString());
-                    byte[] image = selectedSalesman.getImage();
-                    Bitmap bmp= BitmapFactory.decodeByteArray(image, 0 , image.length);
-                    imgSalesman.setImageBitmap(bmp);
-
+                    FillSalesmanInfo(selectedSalesman);
+                    FillSalesInfo(selectedSalesman.getId());
                 }
                 else
                 {
@@ -132,6 +107,7 @@ public class SalesActivity extends AppCompatActivity implements View.OnClickList
         txtMonth =findViewById(R.id.txtMonth);
         txtHiringDate =findViewById(R.id.txtHiringDate);
         imgSalesman = findViewById(R.id.imgSalesman);
+        tableRegionsSales = findViewById(R.id.tableRegionsSales);
     }
 
     private void SetControlsEvents() {
@@ -139,7 +115,7 @@ public class SalesActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void fillSalesmen() {
-        db = openOrCreateDatabase("f18SalesDb",Context.MODE_PRIVATE, null);
+        //db = openOrCreateDatabase("f18SalesDb",Context.MODE_PRIVATE, null);
 //        ArrayList<Salesman> salesmenList =  dbHelper.getSalesmenList(db);
         ArrayList<Salesman> salesmenList =  dbHelper.getSalesmenList();
         SalesmenSpinnerArrayAdapter salesmenAdapter = new SalesmenSpinnerArrayAdapter(this, salesmenList);
@@ -159,4 +135,73 @@ public class SalesActivity extends AppCompatActivity implements View.OnClickList
                 new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,months);
         spinnerMonths.setAdapter(adapter);
     }
+
+    private void FillSalesmanInfo(Salesman salesman)
+    {
+        txtId.setText(salesman.getId().toString());
+        txtName.setText(salesman.getFullName());
+        txtHiringDate.setText(salesman.getHiringDate().toString());
+        byte[] image = salesman.getImage();
+        Bitmap bmp= BitmapFactory.decodeByteArray(image, 0 , image.length);
+        imgSalesman.setImageBitmap(bmp);
+    }
+
+    private void FillSalesInfo(int salesmanId)
+    {
+        txtYear.setText(spinnerYears.getSelectedItem().toString());
+        txtMonth.setText(spinnerMonths.getSelectedItem().toString());
+        ArrayList<Sale> salesList = dbHelper.GetSalesmanSales(salesmanId,spinnerYears.getSelectedItem().toString(),spinnerMonths.getSelectedItem().toString());
+        tableRegionsSales.removeAllViews();
+        addHeaders();
+        addData(salesList);
+    }
+
+    private void addHeaders() {
+        TableRow tr = new TableRow(this);
+        tr.setLayoutParams(getLayoutParams());
+        tr.addView(getTextView(0, "المنطقة", Color.WHITE, Typeface.BOLD,Color.parseColor("#2b7e72") ));
+        tr.addView(getTextView(0, "المبيعات", Color.WHITE, Typeface.BOLD, Color.parseColor("#2b7e72")));
+        tableRegionsSales.addView(tr, getTblLayoutParams());
+    }
+
+   private void addData(ArrayList<Sale> salesList) {
+        int numCompanies = salesList.size();
+        for (int i = 0; i < numCompanies; i++) {
+            TableRow tr = new TableRow(this);
+            tr.setLayoutParams(getLayoutParams());
+            tr.addView(getTextView(i + 1, salesList.get(i).getRegionName() , Color.parseColor("#04433a"), Typeface.NORMAL, Color.parseColor("#dbf7f3")));
+            tr.addView(getTextView(i + numCompanies,Integer.toString(salesList.get(i).getAmount()), Color.parseColor("#04433a"), Typeface.NORMAL, Color.parseColor("#dbf7f3")));
+            tableRegionsSales.addView(tr, getTblLayoutParams());
+        }
+    }
+
+    @NonNull
+    private LayoutParams getLayoutParams() {
+        LayoutParams params = new LayoutParams(
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.WRAP_CONTENT);
+        params.setMargins(2, 10, 0, 2);
+        return params;
+    }
+
+    @NonNull
+    private TableLayout.LayoutParams getTblLayoutParams() {
+        return new TableLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.WRAP_CONTENT);
+    }
+
+    private TextView getTextView(int id, String title, int color, int typeface, int bgColor) {
+        TextView tv = new TextView(this);
+        tv.setId(id);
+        tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        tv.setText(title.toUpperCase());
+        tv.setTextColor(color);
+        tv.setPadding(20, 20, 20, 20);
+        tv.setTypeface(Typeface.DEFAULT, typeface);
+        tv.setBackgroundColor(bgColor);
+        tv.setLayoutParams(getLayoutParams());
+        return tv;
+    }
+
 }

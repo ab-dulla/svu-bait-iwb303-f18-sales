@@ -1,26 +1,23 @@
 package org.svuonline.f18sales.model;
 
 import android.content.ContentValues;
-
 import org.svuonline.f18sales.data.DatabaseHelper;
 
-public class Sale {
+public class Commession {
     private int Id;
     private int SalesmanId;
     private int RegionId;
-    private String SaleDate;
+    private String Year;
+    private String Month;
     private int Amount;
     private String RegionName;
 
-    public Sale(int salesmanId,int regionId, String saleDate,int amount) {
+    public Commession(int salesmanId,int regionId, String year,String month,int amount) {
         this.SalesmanId = salesmanId;
         this.RegionId = regionId;
-        this.SaleDate = saleDate;
-        this.Amount = amount;
-    }
-    public Sale(String regionName,int amount) {
-        this.RegionName = regionName;
-        this.Amount = amount;
+        this.Year = year;
+        this.Month = month;
+        this.Amount = amount ;
     }
 
     public int getId() {
@@ -32,10 +29,13 @@ public class Sale {
     public int getRegionIdId() {
         return RegionId;
     }
-    public String getSaleDate() {
-        return SaleDate;
+    public String getYear() {
+        return Year;
     }
-    public int getAmount() {
+    public String getMonth() {
+        return Month;
+    }
+    public int getCommessionAmount() {
         return Amount;
     }
     public String getRegionName() {
@@ -44,9 +44,10 @@ public class Sale {
 
     public ContentValues ToContentValues() {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseHelper.SalesEntry.SALESMAN_ID, SalesmanId);
-        contentValues.put(DatabaseHelper.SalesEntry.REGION_ID, RegionId);
-        contentValues.put(DatabaseHelper.SalesEntry.SALE_DATE, SaleDate);
+        contentValues.put(DatabaseHelper.CommissionsEntry.SALESMAN_ID, SalesmanId);
+        contentValues.put(DatabaseHelper.CommissionsEntry.REGION_ID, RegionId);
+        contentValues.put(DatabaseHelper.CommissionsEntry.YEAR, Year);
+        contentValues.put(DatabaseHelper.CommissionsEntry.MONTH, Month);
         contentValues.put(DatabaseHelper.SalesEntry.AMOUNT, Amount);
         return contentValues;
     }

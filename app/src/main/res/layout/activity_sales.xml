@@ -7,6 +7,12 @@
     tools:context=".SalesActivity"
     android:textDirection="rtl">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textAlignment="center"
+        android:layout_centerInParent="true">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -23,7 +29,6 @@
                 android:text="معايير البحث"
                 android:textColor="#FFFFFF"
                 android:textSize="15sp" />
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -55,7 +60,6 @@
                     style="@style/spinner_style"
                     android:layoutDirection="rtl"
                     android:textDirection="rtl"/>
-                    <!--app:layout_constraintTop_toBottomOf="@+id/spinnerSalesmen" />-->
 
                 <Spinner
                     android:id="@+id/spinnerYears"
@@ -85,7 +89,6 @@
                     android:text="بحث"
                     android:textSize="14sp" />
 
-
             </RelativeLayout >
 
             <LinearLayout
@@ -106,13 +109,6 @@
                     android:textColor="#FFFFFF"
                     android:textSize="15sp" />
 
-                <!--<LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:textDirection="rtl">-->
-
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -132,11 +128,9 @@
                             android:paddingRight="15dp"
                             android:textDirection="rtl">
 
-
                             <TableRow
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent">
-
 
                                 <TextView
                                     android:id="@+id/lblId"
@@ -207,13 +201,8 @@
                             </TableRow>
                         </TableLayout>
                     </LinearLayout>
-                <!--</LinearLayout>-->
 
-                <!---->
             </LinearLayout>
-
-
-            <!--</LinearLayout>-->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -229,7 +218,7 @@
                     android:layout_marginTop="20dp"
                     android:background="#02574a"
                     android:padding="10dp"
-                    android:text="تفاصيل المبيعات والعمولات"
+                    android:text="تفاصيل المبيعات"
                     android:textColor="#FFFFFF"
                     android:textSize="15sp" />
                 <TableLayout
@@ -282,37 +271,20 @@
                             android:textSize="18dp" />
 
                     </TableRow>
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-
-
-
-
-
-            <ScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" >
-                    <TableLayout
-                        android:id="@+id/tableInvoices"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="0dp"
-                        android:stretchColumns="*">
-                    </TableLayout>
-            </ScrollView>
-
-
-
-
-        </TableRow>
                 </TableLayout>
 
-                <!---->
+                    <TableLayout
+                        android:id="@+id/tableRegionsSales"
+                        android:layout_width="320dp"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center"
+                        android:layout_centerInParent="true"
+                        android:paddingTop="5dp"
+                        android:paddingRight="20dp"
+                        android:paddingBottom="20dp"
+                        android:stretchColumns="*"></TableLayout>
+
             </LinearLayout>
-
         </LinearLayout>
-
-
+</ScrollView>
 </android.support.constraint.ConstraintLayout>

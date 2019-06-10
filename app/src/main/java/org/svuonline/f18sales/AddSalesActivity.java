@@ -58,7 +58,14 @@ public class AddSalesActivity extends AppCompatActivity implements View.OnClickL
             case R.id.btnSave:
                 if(ValidateInputs())
                 {
-                    if (addSale()) {
+                    Salesman selectedSalesman = (Salesman) spinnerSalesmen.getSelectedItem();
+                    int salesmanId = selectedSalesman.getId();
+
+                    Region selectedRegion = (Region) spinnerRegoins.getSelectedItem();
+                    int regionId = selectedRegion.getId();
+
+                    if (addSale(salesmanId,regionId)) {
+                        AddCommession(salesmanId,regionId);
                         Utilities.ShowMessage(this,"","تم حفظ بيانات عملية البيع بنجاح");
                         ClearInputs();
                     }
@@ -114,17 +121,18 @@ public class AddSalesActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-    private boolean addSale() {
-        Salesman selectedSalesman = (Salesman) spinnerSalesmen.getSelectedItem();
-        int salesmanId = selectedSalesman.getId();
-
-        Region selectedRegion = (Region) spinnerRegoins.getSelectedItem();
-        int regionId = selectedRegion.getId();
-
+    private boolean addSale(int salesmanId,int regionId) {
         String saleDate = txtSaleDate.getText().toString();
         int amount =Integer.parseInt(txtAmount.getText().toString());
         Sale sale = new Sale(salesmanId,regionId,saleDate,amount);
         return dbHelper.InsertSale(sale) != -1;
+    }
+
+    private boolean AddCommession(int salesmanId,int regionId)
+    {
+        int totalAmount = dbHelper.GetSalesmanTotalSalesByRegionAndYearAndMoth(salesmanId,regionId,txtSaleDate.getText().toString().substring(6),txtSaleDate.getText().toString().substring(0,2));
+
+        return true;
     }
 
     private void ClearInputs()

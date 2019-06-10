@@ -8,34 +8,34 @@ public class Salesman {
 
     @Override
     public String toString() {
-        return id + fullName + regionId + hiringDate + image;
+        return id + fullName + regionId + hiringDate + imagePath;
     }
 
     private final Integer id;
     private final String fullName;
     private final int regionId;
     private final String hiringDate;
-    private final byte[] image;
+    private final String imagePath;
     private final Integer newId;
 
     // constructor used for initializing a salesman for UPDATE sql command
-    public Salesman(Integer id, String fullName, int regionId, String hiringDate, byte[] image, Integer newId) {
+    public Salesman(Integer id, String fullName, int regionId, String hiringDate, String imagePath, Integer newId) {
         this.id = id;
         this.fullName = fullName;
         this.regionId = regionId;
         this.hiringDate = hiringDate;
-        this.image = image;
+        this.imagePath = imagePath;
         this.newId = newId;
     }
 
-    // constructor used for initializing a salesman for CREATE sql command
-    public Salesman(String fullName, int regionId, String hiringDate, byte[] image) {
-        this(null, fullName, regionId, hiringDate, image, null);
+    // constructor used for initializing a salesman for INSERT sql command
+    public Salesman(String fullName, int regionId, String hiringDate, String imagePath) {
+        this(null, fullName, regionId, hiringDate, imagePath, null);
     }
 
-    // constructor used for initializing salesmen after reading them from the DB
-    public Salesman(Integer id, String fullName, int regionId, String hiringDate, byte[] image) {
-        this(id, fullName, regionId, hiringDate, image, null);
+    // constructor used for initializing salesmen for a SELECT sql command
+    public Salesman(Integer id, String fullName, int regionId, String hiringDate, String imagePath) {
+        this(id, fullName, regionId, hiringDate, imagePath, null);
     }
 
     public Integer getId() {
@@ -54,8 +54,8 @@ public class Salesman {
         return hiringDate;
     }
 
-    public byte[] getImage() {
-        return image;
+    public String getImagePath() {
+        return imagePath;
     }
 
     // Used for updating the `id` in the UPDATE sql command
@@ -75,7 +75,7 @@ public class Salesman {
         contentValues.put(SalesmanEntry.FULL_NAME, fullName);
         contentValues.put(SalesmanEntry.REGION_ID, regionId);
         contentValues.put(SalesmanEntry.HIRING_DATE, hiringDate);
-        contentValues.put(SalesmanEntry.IMAGE, image);
+        contentValues.put(SalesmanEntry.IMAGE_PATH, imagePath);
         return contentValues;
     }
 }

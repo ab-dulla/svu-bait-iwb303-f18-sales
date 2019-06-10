@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,22 +26,22 @@ import org.svuonline.f18sales.data.DatabaseHelper;
 import org.svuonline.f18sales.model.Region;
 import org.svuonline.f18sales.model.Salesman;
 
-import java.io.ByteArrayOutputStream;
-import java.text.ParseException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 import static android.text.TextUtils.isEmpty;
 
 public class AddSalesmanFragment extends Fragment {
 
-    private static final String TAG = AddSalesmanFragment.class.getName();
     private static final int GALLERY_REQUEST_CODE = 406;
-    private static final String DATE_FORMAT = "MM/dd/yyyy";
+    private static final String DATE_FORMAT = "dd/MM/yyyy";
     private static final Locale LOCAL_DATE_FORMAT = Locale.US;
+    private static final String IMAGE_PREFIX = "image_";
 
     private ImageView imageView;
     private FloatingActionButton fabUploadImage;
@@ -52,6 +51,7 @@ public class AddSalesmanFragment extends Fragment {
     private Button buttonAddSalesman;
 
     DatabaseHelper dbHelper;
+    private Uri selectedImageUri;
 
     public AddSalesmanFragment() {
     }
@@ -82,8 +82,8 @@ public class AddSalesmanFragment extends Fragment {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == GALLERY_REQUEST_CODE) {
                 //data.getData returns the content URI for the selected Image
-                Uri selectedImage = data.getData();
-                imageView.setImageURI(selectedImage);
+                selectedImageUri = data.getData();
+                imageView.setImageURI(selectedImageUri);
             }
         }
     }
@@ -148,6 +148,7 @@ public class AddSalesmanFragment extends Fragment {
                     boolean added = addSalesman();
                     if (added) {
                         showMessage("Success", "Salesman was successfully added to the database.");
+                        resetPage();
                     } else {
                         showMessage("Failure", "Failed adding a new Salesman to the database.");
                     }
@@ -169,27 +170,34 @@ public class AddSalesmanFragment extends Fragment {
         String fullName = editTextFullName.getText().toString();
         Region region = (Region) spinnerRegions.getSelectedItem();
         String hiringDate = editTextHiringDate.getText().toString();
-        byte[] image = parseImage();
-        Salesman salesman = new Salesman(fullName, region.getId(), hiringDate, image);
-
-        return dbHelper.insertSalesman(salesman) != -1;
-    }
-
-    private Date parseDate() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT, LOCAL_DATE_FORMAT);
-        try {
-            return dateFormat.parse(editTextHiringDate.getText().toString());
-        } catch (ParseException e) {
-            Log.e(TAG, "Failed to parse hiring date.", e);
-            return null;
+        String imagePath = saveImageInFileDirectory(fullName);
+        if (imagePath != null) {
+            Salesman salesman = new Salesman(fullName, region.getId(), hiringDate, imagePath);
+            return dbHelper.insertSalesman(salesman) != -1;
         }
+        return false;
     }
 
-    private byte[] parseImage() {
-        Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        return baos.toByteArray();
+    private void resetPage() {
+        imageView.setImageDrawable(null);
+        editTextFullName.setText("");
+        editTextHiringDate.setText("Select hiring date..");
+        spinnerRegions.setSelection(0);
+    }
+
+    private String saveImageInFileDirectory(String username) {
+        try {
+            Bitmap imageBitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+            // save image
+            File imageFile = new File(getContext().getFilesDir(), IMAGE_PREFIX + username);
+            FileOutputStream fileOutputStream = new FileOutputStream(imageFile);
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 70, fileOutputStream);
+            // return image path if we success to save the image
+            return imageFile.getAbsolutePath();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private void showMessage(String title, String Message) {

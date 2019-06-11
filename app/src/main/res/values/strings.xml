@@ -4,4 +4,5 @@
     <string name="tab_text_add">Add</string>
     <string name="tab_text_modify">Modify</string>
     <string name="tab_text_delete">Delete</string>
+    <string name="Select_Salesman">-- Select Salesman--</string>
 </resources>

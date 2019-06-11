@@ -4,13 +4,287 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CommissionsActivity">
+    tools:context=".CommissionsActivity"
+    android:textDirection="rtl">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Commissions"
-        tools:layout_editor_absoluteX="175dp"
-        tools:layout_editor_absoluteY="355dp" />
-</android.support.constraint.ConstraintLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAlignment="center"
+            android:layout_centerInParent="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".SalesActivity"
+                android:orientation="vertical"
+                android:textDirection="rtl">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="#02574a"
+                    android:padding="10dp"
+                    android:text="معايير البحث"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:textDirection="rtl">
+
+                    <Spinner
+                        android:id="@+id/spinnerSalesmen"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:spinnerMode="dropdown"
+                        style="@style/spinner_style"
+                        android:textDirection="rtl"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:textDirection="rtl">
+
+                    <Spinner
+                        android:id="@+id/spinnerMonths"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="2"
+                        android:spinnerMode="dropdown"
+                        style="@style/spinner_style"
+                        android:layoutDirection="rtl"
+                        android:textDirection="rtl"/>
+
+                    <Spinner
+                        android:id="@+id/spinnerYears"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:spinnerMode="dropdown"
+                        android:layout_weight="2"
+                        style="@style/spinner_style"
+                        android:layoutDirection="rtl"
+                        android:textDirection="rtl"/>
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:textDirection="rtl">
+
+                    <Button
+                        android:id="@+id/btnSearch"
+                        android:layout_width="100dp"
+                        android:layout_height="30dp"
+                        android:layout_centerInParent="true"
+                        android:background="#02574a"
+                        android:textColor="@android:color/white"
+                        android:text="بحث"
+                        android:textSize="14sp" />
+
+                </RelativeLayout >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layoutDirection="rtl"
+                    android:textDirection="rtl">
+
+                    <TextView
+                        android:id="@+id/txtHeader"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="#02574a"
+                        android:padding="10dp"
+                        android:text="المعلومات الشخصية"
+                        android:textColor="#FFFFFF"
+                        android:textSize="15sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:textDirection="rtl">
+
+                        <ImageView
+                            android:id="@+id/imgSalesman"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:src="@android:drawable/sym_def_app_icon" />
+
+                        <TableLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="15"
+                            android:paddingRight="15dp"
+                            android:textDirection="rtl">
+
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <TextView
+                                    android:id="@+id/lblId"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_centerInParent="true"
+                                    android:layout_gravity="right"
+                                    android:layout_weight="3"
+                                    android:text="رقم المندوب: "
+                                    android:textSize="20dp" />
+
+                                <TextView
+                                    android:id="@+id/txtId"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_centerInParent="true"
+                                    android:layout_gravity="right"
+                                    android:layout_weight="3"
+                                    android:textSize="18dp" />
+
+                            </TableRow>
+
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <TextView
+                                    android:id="@+id/lblName"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_centerInParent="true"
+                                    android:layout_gravity="right"
+                                    android:layout_weight="3"
+                                    android:text="الاسم: "
+                                    android:textSize="20dp" />
+
+                                <TextView
+                                    android:id="@+id/txtName"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_centerInParent="true"
+                                    android:layout_gravity="right"
+                                    android:layout_weight="3"
+                                    android:textSize="18dp" />
+
+                            </TableRow>
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+                                <TextView
+                                    android:id="@+id/lblHiringDate"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_centerInParent="true"
+                                    android:layout_gravity="right"
+                                    android:layout_weight="3"
+                                    android:text="تاريخ التسجيل: "
+                                    android:textSize="20dp" />
+
+                                <TextView
+                                    android:id="@+id/txtHiringDate"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_centerInParent="true"
+                                    android:layout_gravity="right"
+                                    android:layout_weight="3"
+                                    android:textSize="18dp" />
+                            </TableRow>
+                        </TableLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layoutDirection="rtl"
+                    android:textDirection="rtl">
+
+                    <TextView
+                        android:id="@+id/lblSalesAndCommessions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:background="#02574a"
+                        android:padding="10dp"
+                        android:text="تفاصيل العمولات"
+                        android:textColor="#FFFFFF"
+                        android:textSize="15sp" />
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="15"
+                        android:paddingRight="15dp"
+                        android:textDirection="rtl">
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/lblYear"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_centerInParent="true"
+                                android:layout_gravity="right"
+                                android:layout_weight="2"
+                                android:text="السنة: "
+                                android:textSize="20dp" />
+
+                            <TextView
+                                android:id="@+id/txtYear"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_centerInParent="true"
+                                android:layout_gravity="right"
+                                android:layout_weight="3"
+                                android:textSize="18dp" />
+
+                            <TextView
+                                android:id="@+id/lblMonth"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_centerInParent="true"
+                                android:layout_gravity="right"
+                                android:layout_weight="2"
+                                android:text="الشهر: "
+                                android:textSize="20dp" />
+
+                            <TextView
+                                android:id="@+id/txtMonth"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_centerInParent="true"
+                                android:layout_gravity="right"
+                                android:layout_weight="3"
+                                android:textSize="18dp" />
+
+                        </TableRow>
+                    </TableLayout>
+
+                    <TableLayout
+                        android:id="@+id/tableRegionsSales"
+                        android:layout_width="320dp"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center"
+                        android:layout_centerInParent="true"
+                        android:paddingTop="5dp"
+                        android:paddingRight="20dp"
+                        android:paddingBottom="20dp"
+                        android:stretchColumns="*"></TableLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </android.support.constraint.ConstraintLayout>

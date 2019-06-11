@@ -69,7 +69,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:focusable="false"
-        android:hint="01/01/1990"
+        android:hint="Select hiring date.."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner_region" />

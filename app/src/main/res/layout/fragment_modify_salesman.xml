@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,10 +19,10 @@
 
     <ImageView
         android:id="@+id/image"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:adjustViewBounds="true"
         android:background="#F5F5F8"
@@ -32,14 +32,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_salesmen" />
+        app:layout_constraintTop_toBottomOf="@+id/spinner_modify_salesmen" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_upload_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:src="@android:drawable/ic_menu_camera"
+        android:src="@android:drawable/ic_menu_edit"
         app:layout_constraintBottom_toBottomOf="@+id/image"
         app:layout_constraintEnd_toEndOf="@+id/image"
         app:layout_constraintHorizontal_bias="1.0"
@@ -52,7 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="ID"
@@ -93,9 +93,10 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:enabled="false"
+        android:enabled="true"
+        android:clickable="false"
         android:focusable="false"
-        android:hint="01/01/1990"
+        android:hint="01/01/201"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner_region" />

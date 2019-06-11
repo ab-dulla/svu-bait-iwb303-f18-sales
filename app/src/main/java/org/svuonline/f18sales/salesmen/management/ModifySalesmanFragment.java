@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,16 +26,19 @@ import org.svuonline.f18sales.data.DatabaseHelper;
 import org.svuonline.f18sales.model.Region;
 import org.svuonline.f18sales.model.Salesman;
 
-import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 import static android.text.TextUtils.isEmpty;
 
-public class ModifySalesmanFragment extends Fragment {
+public class ModifySalesmanFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     private static final String TAG = ModifySalesmanFragment.class.getName();
     private static final int GALLERY_REQUEST_CODE = 406;
-    DatabaseHelper dbHelper;
+    private static final String IMAGE_PREFIX = "image_";
+    private DatabaseHelper dbHelper;
 
     private Spinner spinnerSalesmen;
     private ImageView imageView;
@@ -53,7 +58,7 @@ public class ModifySalesmanFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_add_salesman, container, false);
+        View v = inflater.inflate(R.layout.fragment_modify_salesman, container, false);
 
         dbHelper = new DatabaseHelper(getContext());
 
@@ -62,8 +67,17 @@ public class ModifySalesmanFragment extends Fragment {
         fillRegionsSpinnerWithData();
         fillSalesmenSpinnerWithData();
 
+        spinnerSalesmen.setOnItemSelectedListener(this);
         setModifySalesmanButtonOnClickListener();
         return v;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            refreshPageContent();
+        }
     }
 
     @Override
@@ -87,9 +101,8 @@ public class ModifySalesmanFragment extends Fragment {
         editTextFullName = v.findViewById(R.id.editText_full_name);
         spinnerRegions = v.findViewById(R.id.spinner_region);
         editTextHiringDate = v.findViewById(R.id.editText_hiring_date);
-        buttonModifySalesman = v.findViewById(R.id.button_add_salesman);
+        buttonModifySalesman = v.findViewById(R.id.button_modify_salesman);
     }
-
 
     private void setImageUploadOnClickListener(View v) {
         fabUploadImage.setOnClickListener(new View.OnClickListener() {
@@ -112,13 +125,8 @@ public class ModifySalesmanFragment extends Fragment {
     }
 
     private void fillSalesmenSpinnerWithData() {
-        ArrayList<Salesman> salesmenList = dbHelper.getAllSalesmen();
-        if (salesmenList.size() > 0) {
-            System.out.println("ooooooooooooo " + salesmenList.get(0).toString() + salesmenList.size());
-            SalesmenSpinnerArrayAdapter salesmenAdapter = new SalesmenSpinnerArrayAdapter(getContext(), salesmenList);
-            System.out.println( "is null " + spinnerSalesmen == null);
-            spinnerSalesmen.setAdapter(salesmenAdapter);
-        }
+        SalesmenSpinnerArrayAdapter salesmenAdapter = new SalesmenSpinnerArrayAdapter(getContext(), dbHelper.getAllSalesmen());
+        spinnerSalesmen.setAdapter(salesmenAdapter);
     }
 
     private void setModifySalesmanButtonOnClickListener() {
@@ -129,6 +137,7 @@ public class ModifySalesmanFragment extends Fragment {
                     boolean modified = modifySalesman();
                     if (modified) {
                         showMessage("Success", "Salesman was successfully modified in the database.");
+                        refreshPageContent();
                     } else {
                         showMessage("Failure", "Failed modifying salesman in the database.");
                     }
@@ -142,31 +151,58 @@ public class ModifySalesmanFragment extends Fragment {
     private boolean isValid() {
         // regions has a default value (always valid)
         // Hiring date editText is disabled --> its value will not change (always valid)
-        // editTextSalesmanId has android:inputType="number" --> no need to do an extra check for integer
-        return imageView.getDrawable() != null &&
+        // editTextSalesmanId has android:inputType="number" --> no need to do an extra check for an integer
+        return spinnerSalesmen.getCount() > 0 &&
+                imageView.getDrawable() != null &&
                 !isEmpty(editTextSalesmanId.getText().toString()) &&
                 !isEmpty(editTextFullName.getText().toString());
     }
 
     private boolean modifySalesman() {
-        // `id` and `newId` are used in the sql UPDATE command
-        Integer id = ((Salesman) spinnerSalesmen.getSelectedItem()).getId();
-        Integer newId = Integer.valueOf(editTextSalesmanId.getText().toString());
-        String fullName = editTextFullName.getText().toString();
-        Region region = (Region) spinnerRegions.getSelectedItem();
-        String hiringDate = editTextHiringDate.getText().toString();
-        byte[] image = parseImage();
-        Salesman salesman = new Salesman(id, fullName, region.getId(), hiringDate, image, newId);
-
-        return dbHelper.updateSalesman(salesman) != -1;
+        try {
+            // `id` and `newId` are needed in the sql UPDATE command
+            Integer id = ((Salesman) spinnerSalesmen.getSelectedItem()).getId();
+            Integer newId = Integer.valueOf(editTextSalesmanId.getText().toString());
+            String fullName = editTextFullName.getText().toString();
+            Region region = (Region) spinnerRegions.getSelectedItem();
+            String hiringDate = editTextHiringDate.getText().toString();
+            String imagePath = saveImageInFilesDirectory(fullName);
+            if (imagePath != null) {
+                Salesman salesman = new Salesman(id, fullName, region.getId(), hiringDate, imagePath, newId);
+                return dbHelper.updateSalesman(salesman) != -1;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
-    private byte[] parseImage() {
-        Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() / 3, bitmap.getHeight() / 3, true);
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 75, baos);
-        return baos.toByteArray();
+    private String saveImageInFilesDirectory(String username) {
+        try {
+            Bitmap imageBitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+            // save image
+            File imageFile = new File(getContext().getFilesDir(), IMAGE_PREFIX + username);
+            FileOutputStream fileOutputStream = new FileOutputStream(imageFile);
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 70, fileOutputStream);
+            // return image path if we success to save the image
+            return imageFile.getAbsolutePath();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void refreshPageContent() {
+        resetPage();
+        fillRegionsSpinnerWithData();
+        fillSalesmenSpinnerWithData();
+    }
+
+    private void resetPage() {
+        imageView.setImageDrawable(null);
+        editTextSalesmanId.setText("");
+        editTextFullName.setText("");
+        editTextHiringDate.setText("hiring date");
     }
 
     private void showMessage(String title, String Message) {
@@ -175,5 +211,25 @@ public class ModifySalesmanFragment extends Fragment {
                 .setTitle(title)
                 .setMessage(Message)
                 .show();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        Salesman salesman = (Salesman) parent.getItemAtPosition(position);
+        editTextFullName.setText(salesman.getFullName());
+        editTextHiringDate.setText(salesman.getHiringDate());
+        editTextSalesmanId.setText(salesman.getId().toString());
+        // read image and show it on the UI
+        File imgFile = new File(salesman.getImagePath());
+        if (imgFile.exists()) {
+            Bitmap image = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+            imageView.setImageBitmap(image);
+        }
+        spinnerRegions.setSelection(salesman.getRegionId() - 1);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        // do nothing
     }
 }

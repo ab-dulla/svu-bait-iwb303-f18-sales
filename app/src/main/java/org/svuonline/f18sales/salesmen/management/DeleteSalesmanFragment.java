@@ -1,7 +1,6 @@
 package org.svuonline.f18sales.salesmen.management;
 
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,6 +12,7 @@ import android.widget.Toast;
 
 import org.svuonline.f18sales.R;
 import org.svuonline.f18sales.data.DatabaseHelper;
+import org.svuonline.f18sales.data.Utilities;
 import org.svuonline.f18sales.model.Salesman;
 
 public class DeleteSalesmanFragment extends Fragment {
@@ -30,10 +30,9 @@ public class DeleteSalesmanFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_delete_salesman, container, false);
-
         dbHelper = new DatabaseHelper(getContext());
-
-        initElements(v);
+        spinnerSalesmen = v.findViewById(R.id.spinner_salesmen);
+        buttonDeleteSalesman = v.findViewById(R.id.button_delete_salesman);
         setDeleteButtonOnClickListener();
         return v;
     }
@@ -46,52 +45,41 @@ public class DeleteSalesmanFragment extends Fragment {
         }
     }
 
-    private void initElements(View v) {
-        spinnerSalesmen = v.findViewById(R.id.spinner_salesmen);
-        buttonDeleteSalesman = v.findViewById(R.id.button_delete_salesman);
-    }
-
     private void fillSalesmenSpinnerWithData() {
+        // a race condition
         boolean dbNotYetReady = dbHelper == null;
         if (dbNotYetReady) {
-            Toast.makeText(getContext(), "Database is not ready yet, please try to re-visit this page after 3 seconds.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "قاعدة البيانات ليست جاهزة بعد، الرجاء معاودة زيارة الصفحة بعد 3 ثوان", Toast.LENGTH_LONG).show();
             return;
         }
+        // fill spinner
         SalesmenSpinnerArrayAdapter salesmenAdapter = new SalesmenSpinnerArrayAdapter(getContext(), dbHelper.getAllSalesmen());
         spinnerSalesmen.setAdapter(salesmenAdapter);
     }
 
     private void setDeleteButtonOnClickListener() {
+        // delete the selected salesman
         buttonDeleteSalesman.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
                     if (spinnerSalesmen.getCount() == 0) {
-                        Toast.makeText(getContext(), "There is no salesman to delete", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "لا يوجد أي مندوب مبيعات ليتم حذفه", Toast.LENGTH_LONG).show();
                         return;
                     }
                     Salesman selectedSalesman = (Salesman) spinnerSalesmen.getSelectedItem();
                     boolean deleted = dbHelper.deleteSalesman(selectedSalesman) != -1;
                     if (deleted) {
-                        showMessage("Success", "Salesman is deleted.");
+                        Utilities.showMessage(getContext(), "نجاح", "تمت حذف مندوب المبيعات بنجاح");
                         fillSalesmenSpinnerWithData();
                     } else {
-                        showMessage("Error", "Error deleting salesman.");
+                        Utilities.showMessage(getContext(), "فشل", "فشل حذف مندوب المبيعات");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    showMessage("Error", "Unexpected error occurred while trying to delete salesman.");
+                    Utilities.showMessage(getContext(), "فشل", "حدث خطأ غير متوقع خلال محاولة حذف المندوب");
                 }
             }
         });
-
-    }
-
-    private void showMessage(String title, String Message) {
-        new AlertDialog.Builder(getContext())
-                .setCancelable(true)
-                .setTitle(title)
-                .setMessage(Message)
-                .show();
     }
 }

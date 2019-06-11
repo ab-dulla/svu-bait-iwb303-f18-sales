@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SalesActivity"
-    android:textDirection="rtl">
+    android:textDirection="rtl"
+    tools:context=".SalesActivity">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textAlignment="center"
-        android:layout_centerInParent="true">
+        android:layout_centerInParent="true"
+        android:textAlignment="center">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".SalesActivity"
             android:orientation="vertical"
-            android:textDirection="rtl">
+            android:textDirection="rtl"
+            tools:context=".SalesActivity">
 
             <TextView
                 android:layout_width="match_parent"
@@ -38,11 +37,11 @@
 
                 <Spinner
                     android:id="@+id/spinnerSalesmen"
+                    style="@style/spinner_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:spinnerMode="dropdown"
-                    style="@style/spinner_style"
-                    android:textDirection="rtl"/>
+                    android:textDirection="rtl" />
             </LinearLayout>
 
             <LinearLayout
@@ -53,23 +52,23 @@
 
                 <Spinner
                     android:id="@+id/spinnerMonths"
+                    style="@style/spinner_style"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:layout_weight="2"
-                    android:spinnerMode="dropdown"
-                    style="@style/spinner_style"
                     android:layoutDirection="rtl"
-                    android:textDirection="rtl"/>
+                    android:spinnerMode="dropdown"
+                    android:textDirection="rtl" />
 
                 <Spinner
                     android:id="@+id/spinnerYears"
+                    style="@style/spinner_style"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:spinnerMode="dropdown"
                     android:layout_weight="2"
-                    style="@style/spinner_style"
                     android:layoutDirection="rtl"
-                    android:textDirection="rtl"/>
+                    android:spinnerMode="dropdown"
+                    android:textDirection="rtl" />
 
             </LinearLayout>
 
@@ -85,17 +84,17 @@
                     android:layout_height="30dp"
                     android:layout_centerInParent="true"
                     android:background="#02574a"
-                    android:textColor="@android:color/white"
                     android:text="بحث"
+                    android:textColor="@android:color/white"
                     android:textSize="14sp" />
 
-            </RelativeLayout >
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layoutDirection="rtl"
+                android:orientation="vertical"
                 android:textDirection="rtl">
 
                 <TextView
@@ -109,106 +108,108 @@
                     android:textColor="#FFFFFF"
                     android:textSize="15sp" />
 
-                    <LinearLayout
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:textDirection="rtl">
+
+                    <ImageView
+                        android:id="@+id/imgSalesman"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@android:drawable/sym_def_app_icon" />
+
+                    <TableLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_height="match_parent"
+                        android:layout_weight="15"
+                        android:paddingRight="15dp"
                         android:textDirection="rtl">
 
-                        <ImageView
-                            android:id="@+id/imgSalesman"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:src="@android:drawable/sym_def_app_icon" />
-
-                        <TableLayout
+                        <TableRow
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="15"
-                            android:paddingRight="15dp"
-                            android:textDirection="rtl">
+                            android:layout_height="match_parent">
 
-                            <TableRow
+                            <TextView
+                                android:id="@+id/lblId"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent">
+                                android:layout_height="match_parent"
+                                android:layout_centerInParent="true"
+                                android:layout_gravity="right"
+                                android:layout_weight="3"
+                                android:text="رقم المندوب: "
+                                android:textSize="20dp" />
 
-                                <TextView
-                                    android:id="@+id/lblId"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_centerInParent="true"
-                                    android:layout_gravity="right"
-                                    android:layout_weight="3"
-                                    android:text="رقم المندوب: "
-                                    android:textSize="20dp" />
-
-                                <TextView
-                                    android:id="@+id/txtId"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_centerInParent="true"
-                                    android:layout_gravity="right"
-                                    android:layout_weight="3"
-                                    android:textSize="18dp" />
-
-                            </TableRow>
-
-                            <TableRow
+                            <TextView
+                                android:id="@+id/txtId"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent">
+                                android:layout_height="match_parent"
+                                android:layout_centerInParent="true"
+                                android:layout_gravity="right"
+                                android:layout_weight="3"
+                                android:textSize="18dp" />
 
-                                <TextView
-                                    android:id="@+id/lblName"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_centerInParent="true"
-                                    android:layout_gravity="right"
-                                    android:layout_weight="3"
-                                    android:text="الاسم: "
-                                    android:textSize="20dp" />
+                        </TableRow>
 
-                                <TextView
-                                    android:id="@+id/txtName"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_centerInParent="true"
-                                    android:layout_gravity="right"
-                                    android:layout_weight="3"
-                                    android:textSize="18dp" />
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
 
-                            </TableRow>
-                            <TableRow
+                            <TextView
+                                android:id="@+id/lblName"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent">
-                                <TextView
-                                    android:id="@+id/lblHiringDate"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_centerInParent="true"
-                                    android:layout_gravity="right"
-                                    android:layout_weight="3"
-                                    android:text="تاريخ التسجيل: "
-                                    android:textSize="20dp" />
+                                android:layout_height="match_parent"
+                                android:layout_centerInParent="true"
+                                android:layout_gravity="right"
+                                android:layout_weight="3"
+                                android:text="الاسم: "
+                                android:textSize="20dp" />
 
-                                <TextView
-                                    android:id="@+id/txtHiringDate"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_centerInParent="true"
-                                    android:layout_gravity="right"
-                                    android:layout_weight="3"
-                                    android:textSize="18dp" />
-                            </TableRow>
-                        </TableLayout>
-                    </LinearLayout>
+                            <TextView
+                                android:id="@+id/txtName"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_centerInParent="true"
+                                android:layout_gravity="right"
+                                android:layout_weight="3"
+                                android:textSize="18dp" />
+
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/lblHiringDate"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_centerInParent="true"
+                                android:layout_gravity="right"
+                                android:layout_weight="3"
+                                android:text="تاريخ التسجيل: "
+                                android:textSize="20dp" />
+
+                            <TextView
+                                android:id="@+id/txtHiringDate"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_centerInParent="true"
+                                android:layout_gravity="right"
+                                android:layout_weight="3"
+                                android:textSize="18dp" />
+                        </TableRow>
+                    </TableLayout>
+                </LinearLayout>
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layoutDirection="rtl"
+                android:orientation="vertical"
                 android:textDirection="rtl">
 
                 <TextView
@@ -221,6 +222,7 @@
                     android:text="تفاصيل المبيعات"
                     android:textColor="#FFFFFF"
                     android:textSize="15sp" />
+
                 <TableLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -273,18 +275,18 @@
                     </TableRow>
                 </TableLayout>
 
-                    <TableLayout
-                        android:id="@+id/tableRegionsSales"
-                        android:layout_width="320dp"
-                        android:layout_height="match_parent"
-                        android:textAlignment="center"
-                        android:layout_centerInParent="true"
-                        android:paddingTop="5dp"
-                        android:paddingRight="20dp"
-                        android:paddingBottom="20dp"
-                        android:stretchColumns="*"></TableLayout>
+                <TableLayout
+                    android:id="@+id/tableRegionsSales"
+                    android:layout_width="320dp"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:paddingTop="5dp"
+                    android:paddingRight="20dp"
+                    android:paddingBottom="20dp"
+                    android:stretchColumns="*"
+                    android:textAlignment="center"></TableLayout>
 
             </LinearLayout>
         </LinearLayout>
-</ScrollView>
+    </ScrollView>
 </android.support.constraint.ConstraintLayout>

@@ -2,8 +2,6 @@ package org.svuonline.f18sales.salesmen.management;
 
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -15,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -23,24 +20,20 @@ import android.widget.Toast;
 
 import org.svuonline.f18sales.R;
 import org.svuonline.f18sales.data.DatabaseHelper;
+import org.svuonline.f18sales.data.Utilities;
 import org.svuonline.f18sales.model.Region;
 import org.svuonline.f18sales.model.Salesman;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
 
 import static android.text.TextUtils.isEmpty;
 
 public class AddSalesmanFragment extends Fragment {
 
     private static final int GALLERY_REQUEST_CODE = 406;
-    private static final String DATE_FORMAT = "dd/MM/yyyy";
-    private static final Locale LOCAL_DATE_FORMAT = Locale.US;
     private static final String IMAGE_PREFIX = "image_";
 
     private ImageView imageView;
@@ -50,8 +43,7 @@ public class AddSalesmanFragment extends Fragment {
     private EditText editTextHiringDate;
     private Button buttonAddSalesman;
 
-    DatabaseHelper dbHelper;
-    private Uri selectedImageUri;
+    private DatabaseHelper dbHelper;
 
     public AddSalesmanFragment() {
     }
@@ -67,9 +59,9 @@ public class AddSalesmanFragment extends Fragment {
         dbHelper = new DatabaseHelper(getContext());
 
         initElements(v);
-        setImageUploadOnClickListener(v);
+        setImageUploadOnClickListener();
         fillRegionsSpinnerWithData();
-        initHiringDateCalender();
+        Utilities.initCalendarElement(getContext(), editTextHiringDate);
 
         setAddSalesmanButtonOnClickListener();
         return v;
@@ -82,7 +74,7 @@ public class AddSalesmanFragment extends Fragment {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == GALLERY_REQUEST_CODE) {
                 //data.getData returns the content URI for the selected Image
-                selectedImageUri = data.getData();
+                Uri selectedImageUri = data.getData();
                 imageView.setImageURI(selectedImageUri);
             }
         }
@@ -97,7 +89,7 @@ public class AddSalesmanFragment extends Fragment {
         buttonAddSalesman = v.findViewById(R.id.button_add_salesman);
     }
 
-    private void setImageUploadOnClickListener(View v) {
+    private void setImageUploadOnClickListener() {
         fabUploadImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,29 +109,6 @@ public class AddSalesmanFragment extends Fragment {
         spinnerRegions.setAdapter(regionsAdapter);
     }
 
-    private void initHiringDateCalender() {
-        final Calendar calendar = Calendar.getInstance();
-        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, monthOfYear);
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                // update calender
-                SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, LOCAL_DATE_FORMAT);
-                editTextHiringDate.setText(sdf.format(calendar.getTime()));
-            }
-        };
-
-        editTextHiringDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new DatePickerDialog(getContext(), date, calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
-            }
-        });
-    }
-
     private void setAddSalesmanButtonOnClickListener() {
         buttonAddSalesman.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,13 +116,13 @@ public class AddSalesmanFragment extends Fragment {
                 if (isValid()) {
                     boolean added = addSalesman();
                     if (added) {
-                        showMessage("Success", "Salesman was successfully added to the database.");
+                        Utilities.showMessage(getContext(), "نجاح", "تمت إضافة مندوب المبيعات بنجاح");
                         resetPage();
                     } else {
-                        showMessage("Failure", "Failed adding a new Salesman to the database.");
+                        Utilities.showMessage(getContext(), "فشل", "فشل إضافة مندوب المبيعات");
                     }
                 } else {
-                    Toast.makeText(getContext(), "Please fill all fields correctly including the image!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "الرجاء تعبئة جميع الحقول بما فيهم الصورة", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -163,7 +132,7 @@ public class AddSalesmanFragment extends Fragment {
         // regions is always valid (it has a default value).
         return imageView.getDrawable() != null &&
                 !isEmpty(editTextFullName.getText().toString()) &&
-                !isEmpty(editTextHiringDate.getText().toString());
+                !editTextHiringDate.getText().toString().equals(getString(R.string.text_hiring_date));
     }
 
     private boolean addSalesman() {
@@ -181,7 +150,7 @@ public class AddSalesmanFragment extends Fragment {
     private void resetPage() {
         imageView.setImageDrawable(null);
         editTextFullName.setText("");
-        editTextHiringDate.setText("Select hiring date..");
+        editTextHiringDate.setText(getString(R.string.text_hiring_date));
         spinnerRegions.setSelection(0);
     }
 
@@ -198,13 +167,5 @@ public class AddSalesmanFragment extends Fragment {
             e.printStackTrace();
         }
         return null;
-    }
-
-    private void showMessage(String title, String Message) {
-        new AlertDialog.Builder(getContext())
-                .setCancelable(true)
-                .setTitle(title)
-                .setMessage(Message)
-                .show();
     }
 }

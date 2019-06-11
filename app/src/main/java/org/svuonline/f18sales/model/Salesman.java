@@ -6,18 +6,15 @@ import org.svuonline.f18sales.data.DatabaseHelper.SalesmanEntry;
 
 public class Salesman {
 
-    @Override
-    public String toString() {
-        return id + fullName + regionId + hiringDate + imagePath;
-    }
-
     private final Integer id;
     private final String fullName;
     private final int regionId;
     private final String hiringDate;
     private final String imagePath;
-    private final Integer newId;
 
+    // `newId` is used for updating the `id` in the UPDATE sql command
+    // Both `id` and `newId` are needed in the UPDATE command
+    private final Integer newId;
 
     // constructor used for initializing a salesman for UPDATE sql command
     public Salesman(Integer id, String fullName, int regionId, String hiringDate, String imagePath, Integer newId) {
@@ -39,9 +36,13 @@ public class Salesman {
         this(id, fullName, regionId, hiringDate, imagePath, null);
     }
 
-    //Rami
     public Salesman(Integer id, String fullName) {
-        this(id, fullName,1,null,null);
+        this(id, fullName, 1, null, null);
+    }
+
+    @Override
+    public String toString() {
+        return id + fullName + regionId + hiringDate + imagePath;
     }
 
     public Integer getId() {
@@ -62,12 +63,6 @@ public class Salesman {
 
     public String getImagePath() {
         return imagePath;
-    }
-
-    // Used for updating the `id` in the UPDATE sql command
-    // Both `id` and `newId` are needed in the UPDATE command
-    public Integer getNewId() {
-        return newId;
     }
 
     public ContentValues toContentValues() {

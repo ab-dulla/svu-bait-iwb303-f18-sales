@@ -4,14 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:textDirection="rtl"
     tools:context=".AddSalesActivity">
-    android:textDirection="rtl">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".SalesActivity"
         android:orientation="vertical"
-        android:textDirection="rtl">
+        android:textDirection="rtl"
+        tools:context=".SalesActivity">
 
         <TextView
             android:layout_width="match_parent"
@@ -19,7 +20,7 @@
             android:layout_marginTop="20dp"
             android:background="#02574a"
             android:padding="10dp"
-            android:text="تفاصيل عملية البيع"
+            android:text="@string/text_sale_details"
             android:textColor="#FFFFFF"
             android:textSize="15sp" />
 
@@ -32,11 +33,11 @@
 
             <Spinner
                 android:id="@+id/spinnerSalesmen"
+                style="@style/spinner_style"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:spinnerMode="dropdown"
-                style="@style/spinner_style"
-                android:textDirection="rtl"/>
+                android:textDirection="rtl" />
         </LinearLayout>
 
         <LinearLayout
@@ -47,11 +48,11 @@
 
             <Spinner
                 android:id="@+id/spinnerRegoins"
+                style="@style/spinner_style"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:spinnerMode="dropdown"
-                style="@style/spinner_style"
-                android:textDirection="rtl"/>
+                android:textDirection="rtl" />
         </LinearLayout>
 
         <LinearLayout
@@ -59,38 +60,40 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:textDirection="rtl">
+
             <EditText
                 android:id="@+id/txtAmount"
+                style="@style/text_style"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".50"
-                style="@style/text_style"
+                android:hint="@string/text_amount_s_p"
                 android:inputType="number"
-                android:hint="-- المبلغ (ل.س) --"
 
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 android:layoutDirection="rtl"
                 android:textDirection="rtl"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/spinnerSalesmen" />
 
             <EditText
                 android:id="@+id/txtSaleDate"
+                style="@style/text_style"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:focusable="false"
                 android:layout_weight=".50"
-                android:hint="-- تاريخ العملية --"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                android:focusable="false"
+                android:hint="@string/text_operation_date"
                 android:layoutDirection="rtl"
                 android:textDirection="rtl"
-                style="@style/text_style"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtAmount" />
         </LinearLayout>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -103,9 +106,9 @@
                 android:layout_height="30dp"
                 android:layout_centerInParent="true"
                 android:background="#02574a"
+                android:text="@string/text_save"
                 android:textColor="@android:color/white"
-                android:text="حفظ"
                 android:textSize="14sp" />
-        </RelativeLayout >
+        </RelativeLayout>
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

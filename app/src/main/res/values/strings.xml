@@ -1,8 +1,23 @@
 <resources>
     <string name="app_name">F18 Sales</string>
     <string name="title_activity_salesmen_management">SalesmenManagementActivity</string>
-    <string name="tab_text_add">Add</string>
-    <string name="tab_text_modify">Modify</string>
-    <string name="tab_text_delete">Delete</string>
-    <string name="Select_Salesman">-- Select Salesman--</string>
+    <string name="tab_text_add">إضافة</string>
+    <string name="tab_text_modify">تعديل</string>
+    <string name="tab_text_delete">حذف</string>
+    <string name="Select_Salesman">-- اختر المندوب --</string>
+    <string name="text_hiring_date">-- تاريخ التوظيف --</string>
+    <string name="text_add_salesman">إضافة مندوب</string>
+    <string name="text_full_name">اسم المندوب</string>
+    <string name="text_delete_salesman">حذف المندوب</string>
+    <string name="text_modify_salesman">تعديل المندوب</string>
+    <string name="text_hiring_date_modify">تاريخ التوظيف</string>
+    <string name="text_salesman_id">رقم المندوب</string>
+    <string name="text_add_sales">إضافة مبيعات</string>
+    <string name="text_sales">المبيعات</string>
+    <string name="text_commissions">العمولات</string>
+    <string name="text_manage_salesmen">إدارة المندوبين</string>
+    <string name="text_operation_date">-- تاريخ العملية --</string>
+    <string name="text_amount_s_p">-- المبلغ (ل.س) --</string>
+    <string name="text_sale_details">تفاصيل عملية البيع</string>
+    <string name="text_save">حفظ</string>
 </resources>

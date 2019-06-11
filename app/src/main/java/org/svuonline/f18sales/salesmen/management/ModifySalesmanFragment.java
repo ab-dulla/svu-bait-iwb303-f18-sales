@@ -2,7 +2,6 @@ package org.svuonline.f18sales.salesmen.management;
 
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,6 +22,7 @@ import android.widget.Toast;
 
 import org.svuonline.f18sales.R;
 import org.svuonline.f18sales.data.DatabaseHelper;
+import org.svuonline.f18sales.data.Utilities;
 import org.svuonline.f18sales.model.Region;
 import org.svuonline.f18sales.model.Salesman;
 
@@ -38,6 +38,7 @@ public class ModifySalesmanFragment extends Fragment implements AdapterView.OnIt
     private static final String TAG = ModifySalesmanFragment.class.getName();
     private static final int GALLERY_REQUEST_CODE = 406;
     private static final String IMAGE_PREFIX = "image_";
+
     private DatabaseHelper dbHelper;
 
     private Spinner spinnerSalesmen;
@@ -136,13 +137,13 @@ public class ModifySalesmanFragment extends Fragment implements AdapterView.OnIt
                 if (isValid()) {
                     boolean modified = modifySalesman();
                     if (modified) {
-                        showMessage("Success", "Salesman was successfully modified in the database.");
+                        Utilities.showMessage(getContext(), "نجاح", "تمت تعديل مندوب المبيعات بنجاح");
                         refreshPageContent();
                     } else {
-                        showMessage("Failure", "Failed modifying salesman in the database.");
+                        Utilities.showMessage(getContext(), "فشل", "فشل تعديل مندوب المبيعات");
                     }
                 } else {
-                    Toast.makeText(getContext(), "Please fill all fields correctly including the image!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "الرجاء تعبئة جميع الحقول بما فيهم الصورة", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -150,7 +151,7 @@ public class ModifySalesmanFragment extends Fragment implements AdapterView.OnIt
 
     private boolean isValid() {
         // regions has a default value (always valid)
-        // Hiring date editText is disabled --> its value will not change (always valid)
+        // Hiring date editText is not editable --> its value will not change (always valid)
         // editTextSalesmanId has android:inputType="number" --> no need to do an extra check for an integer
         return spinnerSalesmen.getCount() > 0 &&
                 imageView.getDrawable() != null &&
@@ -202,29 +203,23 @@ public class ModifySalesmanFragment extends Fragment implements AdapterView.OnIt
         imageView.setImageDrawable(null);
         editTextSalesmanId.setText("");
         editTextFullName.setText("");
-        editTextHiringDate.setText("hiring date");
-    }
-
-    private void showMessage(String title, String Message) {
-        new AlertDialog.Builder(getContext())
-                .setCancelable(true)
-                .setTitle(title)
-                .setMessage(Message)
-                .show();
+        editTextHiringDate.setText(getString(R.string.text_hiring_date_modify));
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        // fill details
         Salesman salesman = (Salesman) parent.getItemAtPosition(position);
         editTextFullName.setText(salesman.getFullName());
         editTextHiringDate.setText(salesman.getHiringDate());
         editTextSalesmanId.setText(salesman.getId().toString());
-        // read image and show it on the UI
+        // read image from internal storage and show it on the UI
         File imgFile = new File(salesman.getImagePath());
         if (imgFile.exists()) {
             Bitmap image = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
             imageView.setImageBitmap(image);
         }
+        // the `- 1` is because the db index starts from `1` but the spinner index starts from `0`
         spinnerRegions.setSelection(salesman.getRegionId() - 1);
     }
 

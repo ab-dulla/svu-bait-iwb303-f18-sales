@@ -27,7 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + SalesmanEntry.FULL_NAME + " TEXT NOT NULL, "
             + SalesmanEntry.HIRING_DATE + " TEXT, "
             + SalesmanEntry.REGION_ID + " INTEGER, "
-            + SalesmanEntry.IMAGE + " BLOB, "
+            + SalesmanEntry.IMAGE_PATH + " TEXT, "
             + "FOREIGN KEY(" + SalesmanEntry.REGION_ID + ") REFERENCES " + RegionEntry.TABLE_NAME + "(" + RegionEntry._ID + ")"
             + ");";
 
@@ -104,9 +104,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + SalesmanEntry._ID + ", "
                 + SalesmanEntry.FULL_NAME + ", "
                 + SalesmanEntry.REGION_ID + ", "
-                + SalesmanEntry.HIRING_DATE
-//                + ", "
-//                + SalesmanEntry.IMAGE
+                + SalesmanEntry.HIRING_DATE + ", "
+                + SalesmanEntry.IMAGE_PATH
                 + " FROM " + SalesmanEntry.TABLE_NAME;
         Cursor cursor = db.rawQuery(selectSql, null);
         ArrayList<Salesman> salesmen = parseSalesmen(cursor);
@@ -121,8 +120,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String fullName = cursor.getString(1);
             int regionId = cursor.getInt(2);
             String hiringDate = cursor.getString(3);
-//            byte[] image = cursor.getBlob(4);
-            salesmen.add(new Salesman(id, fullName, regionId, hiringDate, new byte[]{}));
+            String imagePath = cursor.getString(4);
+            salesmen.add(new Salesman(id, fullName, regionId, hiringDate, imagePath));
         }
         cursor.close();
         return salesmen;
@@ -135,8 +134,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public int updateSalesman(Salesman salesman) {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.update(SalesmanEntry.TABLE_NAME, salesman.toContentValues(),
-                SalesmanEntry._ID + " = ?", new String[]{salesman.getId().toString()});
+        return db.update(SalesmanEntry.TABLE_NAME,
+                salesman.toContentValues(),
+                SalesmanEntry._ID + " = ?",
+                new String[]{salesman.getId().toString()});
+    }
+
+    public int deleteSalesman(Salesman salesman) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(SalesmanEntry.TABLE_NAME,
+                SalesmanEntry._ID + " = ?",
+                new String[]{salesman.getId().toString()});
     }
 
     public static class RegionEntry implements BaseColumns {
@@ -148,7 +156,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String TABLE_NAME = "salesman";
         public static final String FULL_NAME = "full_name";
         public static final String HIRING_DATE = "hiring_date";
-        public static final String IMAGE = "image";
+        public static final String IMAGE_PATH = "image_path";
         public static final String REGION_ID = "region_id";
     }
 

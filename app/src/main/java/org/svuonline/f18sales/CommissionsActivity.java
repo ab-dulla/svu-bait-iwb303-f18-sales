@@ -163,7 +163,7 @@ public class CommissionsActivity extends AppCompatActivity implements View.OnCli
         TableRow tr = new TableRow(this);
         tr.setLayoutParams(getLayoutParams());
         tr.addView(getTextView(0, "المنطقة", Color.WHITE, Typeface.BOLD, Color.parseColor("#2b7e72")));
-        tr.addView(getTextView(0, "المبيعات", Color.WHITE, Typeface.BOLD, Color.parseColor("#2b7e72")));
+        tr.addView(getTextView(0, "العمولات", Color.WHITE, Typeface.BOLD, Color.parseColor("#2b7e72")));
         tableRegionsCommissions.addView(tr, getTblLayoutParams());
     }
 

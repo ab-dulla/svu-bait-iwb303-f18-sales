@@ -68,6 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_SALESMAN);
         db.execSQL(SQL_CREATE_SALES);
         db.execSQL(SQL_CREATE_COMMISSIONS);
+//        db.execSQL("PRAGMA foreign_keys = ON;");
         insertDefaultRegions(db);
     }
 
@@ -77,6 +78,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_SALESMAN);
         db.execSQL(SQL_DELETE_SALES);
         db.execSQL(SQL_DELETE_COMMESSIONS);
+//        db.execSQL("PRAGMA foreign_keys = ON;");
         onCreate(db);
     }
 

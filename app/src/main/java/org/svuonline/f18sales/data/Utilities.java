@@ -1,8 +1,10 @@
 package org.svuonline.f18sales.data;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -12,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class Utilities {
+public class Utilities{
 
     private static final String DATE_FORMAT = "dd/MM/yyyy";
     private static final Locale LOCAL_DATE_FORMAT = Locale.US;
@@ -76,4 +78,52 @@ public class Utilities {
                 .setMessage(Message)
                 .show();
     }
+
+/*    public static void ShowConfirmMessage(Context context, String title, String Message)
+    {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        builder
+                .setMessage("Are you sure?")
+                .setPositiveButton("Yes",  new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog,int id) {
+                        dialog.cancel();
+                    }
+                })
+                .show();
+
+
+
+        *//*AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(Message);
+        builder.setPositiveButton("Confirm",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();*//*
+    }
+
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+
+    }*/
 }

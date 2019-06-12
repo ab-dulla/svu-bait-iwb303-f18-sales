@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
+import org.svuonline.f18sales.model.Commission;
 import org.svuonline.f18sales.model.Region;
 import org.svuonline.f18sales.model.Sale;
 import org.svuonline.f18sales.model.Salesman;
@@ -37,8 +38,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + SalesEntry.REGION_ID + " INTEGER NOT NULL, "
             + SalesEntry.SALE_DATE + " TEXT NOT NULL, "
             + SalesEntry.AMOUNT + " INTEGER,"
-            + " FOREIGN KEY(" + SalesEntry.SALESMAN_ID + ") REFERENCES " + SalesmanEntry.TABLE_NAME + "(" + SalesmanEntry._ID + "),"
-            + " FOREIGN KEY(" + SalesEntry.REGION_ID + ") REFERENCES " + RegionEntry.TABLE_NAME + "(" + RegionEntry._ID + ")"
+            + " FOREIGN KEY(" + SalesEntry.SALESMAN_ID + ") REFERENCES " + SalesmanEntry.TABLE_NAME + "(" + SalesmanEntry._ID + ") ON UPDATE CASCADE,"
+            + " FOREIGN KEY(" + SalesEntry.REGION_ID + ") REFERENCES " + RegionEntry.TABLE_NAME + "(" + RegionEntry._ID + ") ON UPDATE CASCADE"
             + ");";
 
     private static final String SQL_CREATE_COMMISSIONS = "CREATE TABLE " + CommissionsEntry.TABLE_NAME + "("
@@ -66,7 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_REGIONS);
         db.execSQL(SQL_CREATE_SALESMAN);
         db.execSQL(SQL_CREATE_SALES);
-//        db.execSQL(SQL_CREATE_COMMISSIONS);
+        db.execSQL(SQL_CREATE_COMMISSIONS);
         insertDefaultRegions(db);
     }
 
@@ -75,7 +76,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_REGIONS);
         db.execSQL(SQL_DELETE_SALESMAN);
         db.execSQL(SQL_DELETE_SALES);
-//        db.execSQL(SQL_DELETE_COMMESSIONS);
+        db.execSQL(SQL_DELETE_COMMESSIONS);
         onCreate(db);
     }
 
@@ -167,6 +168,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[]{salesman.getId().toString()});
     }
 
+    public int UpdateCommession(Commission commission) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.update(CommissionsEntry.TABLE_NAME,
+                commission.ToContentValues(),
+                CommissionsEntry.SALESMAN_ID + " = ? and " + CommissionsEntry.REGION_ID + " = ? and "+CommissionsEntry.YEAR + " = ? and "+ CommissionsEntry.MONTH + " = ?",
+                new String[]{Integer.toString(commission.getSalesmanId()),Integer.toString(commission.getRegionId()),commission.getYear().toString(),commission.getMonth().toString()});
+    }
+
     public int deleteSalesman(Salesman salesman) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(SalesmanEntry.TABLE_NAME,
@@ -214,16 +223,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.insert(SalesEntry.TABLE_NAME, null, sale.ToContentValues());
     }
 
+    public long InsertCommessoin(Commission commission) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.insert(CommissionsEntry.TABLE_NAME, null, commission.ToContentValues());
+    }
+
     public ArrayList<Sale> GetSalesmanSales(int salesmanId, String year, String month) {
         SQLiteDatabase db = this.getReadableDatabase();
-        /*String selectSql =
-                "SELECT R.name, S.amount" +
-                " FROM sales as S inner join region as R on S.region_id=R._id" +
-                " where S.salesman_id="+salesmanId +
-                " and substr(S.sale_date,7)='" +year+ "'" +
-                " and substr(S.sale_date,1,2) ='" + month+ "'";*/
-
-
         String selectSql =
                 "SELECT R.name as RegionName, IFNULL(SUM(S.amount),0) AS 'Amount'" +
                         " FROM region as R" +
@@ -232,19 +238,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         "SELECT region_id,amount FROM sales" +
                         " where salesman_id=" + salesmanId +
                         " and substr( sale_date,7)='" + year +
-                        "' and substr(sale_date,1,2) ='" + month + "'" +
+                        "' and substr(sale_date,4,2) ='" + month + "'" +
                         ") as S" +
                         " ON  S.region_id=R._id" +
                         " GROUP BY R.name" +
                         " order by Amount desc";
-
-//                "SELECT "
-//                + RegionEntry.NAME + ", "
-//                + SalesEntry.AMOUNT
-//                + " FROM " + SalesEntry.TABLE_NAME + " inner join " + RegionEntry.TABLE_NAME + " on " + SalesEntry.REGION_ID + "=" + RegionEntry._ID
-//                + " where " + SalesEntry.SALESMAN_ID + "=" + salesmanId
-//                + " and year(" + SalesEntry.SALE_DATE +")=" + year
-//                + " and month(" + SalesEntry.SALE_DATE +")=" + month;
         Cursor cursor = db.rawQuery(selectSql, null);
         ArrayList<Sale> salesList = new ArrayList<>();
         while (cursor.moveToNext()) {
@@ -256,6 +254,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return salesList;
     }
 
+    public ArrayList<Commission> GetSalesmanCommissions(int salesmanId, String year, String month) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectSql =
+                "SELECT R.name as RegionName, IFNULL(SUM(S.amount),0) AS 'Amount'" +
+                        " FROM region as R" +
+                        " LEFT JOIN " +
+                        "(" +
+                        "SELECT regionId,amount FROM commissions" +
+                        " where salesmanId=" + salesmanId +
+                        " and year='" + year +
+                        "' and month ='" + month + "'" +
+                        ") as S" +
+                        " ON  S.regionId=R._id" +
+                        " GROUP BY R.name" +
+                        " order by Amount desc";
+        Cursor cursor = db.rawQuery(selectSql, null);
+        ArrayList<Commission> commissionList = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            String RegionName = cursor.getString(0);
+            int Amount = cursor.getInt(1);
+            commissionList.add(new Commission(RegionName, Amount));
+        }
+        cursor.close();
+        return commissionList;
+    }
+
     public int GetSalesmanTotalSalesByRegionAndYearAndMoth(int salesmanId, int regionId, String year, String month) {
         SQLiteDatabase db = this.getReadableDatabase();
         String selectSql =
@@ -264,7 +289,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         "inner join sales as S on S.region_id=R._id " +
                         " where S.salesman_id=" + salesmanId +
                         " and substr( sale_date,7)='" + year +
-                        "' and substr(sale_date,1,2) ='" + month + "'" +
+                        "' and substr(sale_date,4,2) ='" + month + "'" +
                         " and R._id = " + regionId +
                         " group by R._id";
         Cursor cursor = db.rawQuery(selectSql, null);
@@ -275,6 +300,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         return totalAmount;
+    }
+
+
+    public int GetSalesmanCommessionByRegionAndYearAndMoth(int salesmanId, int regionId, String year, String month) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectSql =
+                "SELECT amount " +
+                        "FROM " + CommissionsEntry.TABLE_NAME +
+                        " where " + CommissionsEntry.SALESMAN_ID + "=" + salesmanId +
+                        " and " + CommissionsEntry.REGION_ID + "=" + regionId +
+                        " and " + CommissionsEntry.YEAR + "='" + year +"'"+
+                        " and " + CommissionsEntry.MONTH + "='" + month+"'";
+        Cursor cursor = db.rawQuery(selectSql, null);
+        int commessionAmount = 0;
+        if (cursor.getCount() > 0) {
+            cursor.moveToNext();
+            commessionAmount = cursor.getInt(0);
+        }
+        cursor.close();
+        return commessionAmount;
     }
 
     public static class RegionEntry implements BaseColumns {

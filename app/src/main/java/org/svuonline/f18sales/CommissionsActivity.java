@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,17 +20,18 @@ import android.widget.TextView;
 
 import org.svuonline.f18sales.data.DatabaseHelper;
 import org.svuonline.f18sales.data.Utilities;
+import org.svuonline.f18sales.model.Commission;
 import org.svuonline.f18sales.model.Sale;
 import org.svuonline.f18sales.model.Salesman;
 import org.svuonline.f18sales.salesmen.management.SalesmenSpinnerArrayAdapter;
-
 import java.io.File;
 import java.util.ArrayList;
 
-public class CommissionsActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private TableLayout tableRegionsSales;
-    private DatabaseHelper dbHelper;
+public class CommissionsActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+
+    TableLayout tableRegionsCommissions;
+    DatabaseHelper dbHelper;
 //    private SQLiteDatabase db;
 
     private Spinner spinnerSalesmen;
@@ -42,6 +44,7 @@ public class CommissionsActivity extends AppCompatActivity implements View.OnCli
     private TextView txtMonth;
     private TextView txtHiringDate;
     private ImageView imgSalesman;
+    private int totalCommission;
 
     /******************************************************
      **************      Controls Events      *************
@@ -55,10 +58,12 @@ public class CommissionsActivity extends AppCompatActivity implements View.OnCli
         dbHelper = new DatabaseHelper(this);
 
         FindElements();
-        SetControlsEvents();
         fillSalesmen();
         FillYears();
         FillMonths();
+        SetControlsEvents();
+
+
     }
 
     @Override
@@ -67,13 +72,17 @@ public class CommissionsActivity extends AppCompatActivity implements View.OnCli
             if (ValidateInputs()) {
                 Salesman selectedSalesman = (Salesman) spinnerSalesmen.getSelectedItem();
                 selectedSalesman = dbHelper.getSalesmenById(selectedSalesman.getId());
-                FillSalesmanInfo(selectedSalesman);
-                FillSalesInfo(selectedSalesman.getId());
+                //FillSalesmanInfo(selectedSalesman);
+                FillCommissionInfo(selectedSalesman.getId());
             } else {
                 Utilities.showMessage(this, "", "عفواً، يجب أن تقوم بإدخال جميع معايير البحث");
             }
         }
+
+
+
     }
+
 
     /******************************************************
      **************      Private Methods      *************
@@ -97,15 +106,16 @@ public class CommissionsActivity extends AppCompatActivity implements View.OnCli
         txtMonth = findViewById(R.id.txtMonth);
         txtHiringDate = findViewById(R.id.txtHiringDate);
         imgSalesman = findViewById(R.id.imgSalesman);
-        tableRegionsSales = findViewById(R.id.tableRegionsSales);
+        tableRegionsCommissions = findViewById(R.id.tableRegionsCommissions);
     }
 
     private void SetControlsEvents() {
         btnSearch.setOnClickListener(this);
+        spinnerSalesmen.setOnItemSelectedListener(this);
     }
 
     private void fillSalesmen() {
-//        db = openOrCreateDatabase("f18SalesDb",Context.MODE_PRIVATE, null);
+        //db = openOrCreateDatabase("f18SalesDb",Context.MODE_PRIVATE, null);
 //        ArrayList<Salesman> salesmenList =  dbHelper.getSalesmenList(db);
         ArrayList<Salesman> salesmenList = dbHelper.getSalesmenList();
         SalesmenSpinnerArrayAdapter salesmenAdapter = new SalesmenSpinnerArrayAdapter(this, salesmenList);
@@ -138,13 +148,15 @@ public class CommissionsActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    private void FillSalesInfo(int salesmanId) {
+    private void FillCommissionInfo(int salesmanId) {
+        totalCommission=0;
         txtYear.setText(spinnerYears.getSelectedItem().toString());
         txtMonth.setText(spinnerMonths.getSelectedItem().toString());
-        ArrayList<Sale> salesList = dbHelper.GetSalesmanSales(salesmanId, spinnerYears.getSelectedItem().toString(), spinnerMonths.getSelectedItem().toString());
-        tableRegionsSales.removeAllViews();
+        ArrayList<Commission> CommissionsList = dbHelper.GetSalesmanCommissions(salesmanId,spinnerYears.getSelectedItem().toString(), spinnerMonths.getSelectedItem().toString());
+        tableRegionsCommissions.removeAllViews();
         addHeaders();
-        addData(salesList);
+        addData(CommissionsList);
+        addFooter();
     }
 
     private void addHeaders() {
@@ -152,18 +164,27 @@ public class CommissionsActivity extends AppCompatActivity implements View.OnCli
         tr.setLayoutParams(getLayoutParams());
         tr.addView(getTextView(0, "المنطقة", Color.WHITE, Typeface.BOLD, Color.parseColor("#2b7e72")));
         tr.addView(getTextView(0, "المبيعات", Color.WHITE, Typeface.BOLD, Color.parseColor("#2b7e72")));
-        tableRegionsSales.addView(tr, getTblLayoutParams());
+        tableRegionsCommissions.addView(tr, getTblLayoutParams());
     }
 
-    private void addData(ArrayList<Sale> salesList) {
-        int numCompanies = salesList.size();
+    private void addData(ArrayList<Commission> commissionsList) {
+        int numCompanies = commissionsList.size();
         for (int i = 0; i < numCompanies; i++) {
             TableRow tr = new TableRow(this);
             tr.setLayoutParams(getLayoutParams());
-            tr.addView(getTextView(i + 1, salesList.get(i).getRegionName(), Color.parseColor("#04433a"), Typeface.NORMAL, Color.parseColor("#dbf7f3")));
-            tr.addView(getTextView(i + numCompanies, Integer.toString(salesList.get(i).getAmount()), Color.parseColor("#04433a"), Typeface.NORMAL, Color.parseColor("#dbf7f3")));
-            tableRegionsSales.addView(tr, getTblLayoutParams());
+            tr.addView(getTextView(i + 1, commissionsList.get(i).getRegionName(), Color.parseColor("#04433a"), Typeface.NORMAL, Color.parseColor("#dbf7f3")));
+            tr.addView(getTextView(i + numCompanies, Integer.toString(commissionsList.get(i).getCommissionAmount()), Color.parseColor("#04433a"), Typeface.NORMAL, Color.parseColor("#dbf7f3")));
+            tableRegionsCommissions.addView(tr, getTblLayoutParams());
+            totalCommission = totalCommission+commissionsList.get(i).getCommissionAmount();
         }
+    }
+
+    private void addFooter() {
+        TableRow tr = new TableRow(this);
+        tr.setLayoutParams(getLayoutParams());
+        tr.addView(getTextView(0, "إجمالي العمولات", Color.WHITE, Typeface.BOLD, Color.parseColor("#2b7e72")));
+        tr.addView(getTextView(0, Integer.toString(totalCommission), Color.WHITE, Typeface.BOLD, Color.parseColor("#2b7e72")));
+        tableRegionsCommissions.addView(tr, getTblLayoutParams());
     }
 
     @NonNull
@@ -195,4 +216,29 @@ public class CommissionsActivity extends AppCompatActivity implements View.OnCli
         return tv;
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (position==0)
+        {
+            ClearSalesmanInfo();
+        }
+        else
+        {
+            Salesman selectedSalesman = (Salesman) spinnerSalesmen.getSelectedItem();
+            selectedSalesman = dbHelper.getSalesmenById(selectedSalesman.getId());
+            FillSalesmanInfo(selectedSalesman);
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    private void ClearSalesmanInfo() {
+        txtId.setText("");
+        txtName.setText("");
+        txtHiringDate.setText("");
+        imgSalesman.setImageBitmap(null);
+    }
 }

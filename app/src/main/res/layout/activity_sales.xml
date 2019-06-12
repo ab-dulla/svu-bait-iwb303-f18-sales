@@ -114,11 +114,7 @@
                     android:orientation="horizontal"
                     android:textDirection="rtl">
 
-                    <ImageView
-                        android:id="@+id/imgSalesman"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:src="@android:drawable/sym_def_app_icon" />
+
 
                     <TableLayout
                         android:layout_width="match_parent"
@@ -201,6 +197,14 @@
                                 android:textSize="18dp" />
                         </TableRow>
                     </TableLayout>
+
+                    <ImageView
+                        android:id="@+id/imgSalesman"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:paddingLeft="10dp"
+                        android:src="@android:drawable/sym_def_app_icon" />
+
                 </LinearLayout>
 
             </LinearLayout>

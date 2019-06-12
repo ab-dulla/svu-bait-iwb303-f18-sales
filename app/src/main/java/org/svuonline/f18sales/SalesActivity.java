@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -27,7 +28,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 
-public class SalesActivity extends AppCompatActivity implements View.OnClickListener {
+public class SalesActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     TableLayout tableRegionsSales;
     DatabaseHelper dbHelper;
@@ -56,10 +57,10 @@ public class SalesActivity extends AppCompatActivity implements View.OnClickList
         dbHelper = new DatabaseHelper(this);
 
         FindElements();
-        SetControlsEvents();
         fillSalesmen();
         FillYears();
         FillMonths();
+        SetControlsEvents();
     }
 
     @Override
@@ -68,7 +69,7 @@ public class SalesActivity extends AppCompatActivity implements View.OnClickList
             if (ValidateInputs()) {
                 Salesman selectedSalesman = (Salesman) spinnerSalesmen.getSelectedItem();
                 selectedSalesman = dbHelper.getSalesmenById(selectedSalesman.getId());
-                FillSalesmanInfo(selectedSalesman);
+                //FillSalesmanInfo(selectedSalesman);
                 FillSalesInfo(selectedSalesman.getId());
             } else {
                 Utilities.showMessage(this, "", "عفواً، يجب أن تقوم بإدخال جميع معايير البحث");
@@ -104,6 +105,7 @@ public class SalesActivity extends AppCompatActivity implements View.OnClickList
 
     private void SetControlsEvents() {
         btnSearch.setOnClickListener(this);
+        spinnerSalesmen.setOnItemSelectedListener(this);
     }
 
     private void fillSalesmen() {
@@ -197,4 +199,29 @@ public class SalesActivity extends AppCompatActivity implements View.OnClickList
         return tv;
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (position==0)
+        {
+            ClearSalesmanInfo();
+        }
+        else
+        {
+            Salesman selectedSalesman = (Salesman) spinnerSalesmen.getSelectedItem();
+            selectedSalesman = dbHelper.getSalesmenById(selectedSalesman.getId());
+            FillSalesmanInfo(selectedSalesman);
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    private void ClearSalesmanInfo() {
+        txtId.setText("");
+        txtName.setText("");
+        txtHiringDate.setText("");
+        imgSalesman.setImageBitmap(null);
+    }
 }

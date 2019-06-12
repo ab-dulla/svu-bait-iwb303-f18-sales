@@ -21,6 +21,11 @@ public class Commission {
         this.Amount = amount;
     }
 
+    public Commission(String regionName, int amount) {
+        this.RegionName = regionName;
+        this.Amount = amount;
+    }
+
     public int getId() {
         return Id;
     }
@@ -29,7 +34,7 @@ public class Commission {
         return SalesmanId;
     }
 
-    public int getRegionIdId() {
+    public int getRegionId() {
         return RegionId;
     }
 

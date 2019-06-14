@@ -5,62 +5,57 @@ import android.content.ContentValues;
 import org.svuonline.f18sales.data.DatabaseHelper;
 
 public class Commission {
-    private int Id;
-    private int SalesmanId;
-    private int RegionId;
-    private String Year;
-    private String Month;
-    private int Amount;
-    private String RegionName;
+    private int salesmanId;
+    private int regionId;
+    private String year;
+    private String month;
+    private int amount;
+    private String regionName;
 
     public Commission(int salesmanId, int regionId, String year, String month, int amount) {
-        this.SalesmanId = salesmanId;
-        this.RegionId = regionId;
-        this.Year = year;
-        this.Month = month;
-        this.Amount = amount;
+        this.salesmanId = salesmanId;
+        this.regionId = regionId;
+        this.year = year;
+        this.month = month;
+        this.amount = amount;
     }
 
     public Commission(String regionName, int amount) {
-        this.RegionName = regionName;
-        this.Amount = amount;
-    }
-
-    public int getId() {
-        return Id;
+        this.regionName = regionName;
+        this.amount = amount;
     }
 
     public int getSalesmanId() {
-        return SalesmanId;
+        return salesmanId;
     }
 
     public int getRegionId() {
-        return RegionId;
+        return regionId;
     }
 
     public String getYear() {
-        return Year;
+        return year;
     }
 
     public String getMonth() {
-        return Month;
+        return month;
     }
 
     public int getCommissionAmount() {
-        return Amount;
+        return amount;
     }
 
     public String getRegionName() {
-        return RegionName;
+        return regionName;
     }
 
     public ContentValues ToContentValues() {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseHelper.CommissionsEntry.SALESMAN_ID, SalesmanId);
-        contentValues.put(DatabaseHelper.CommissionsEntry.REGION_ID, RegionId);
-        contentValues.put(DatabaseHelper.CommissionsEntry.YEAR, Year);
-        contentValues.put(DatabaseHelper.CommissionsEntry.MONTH, Month);
-        contentValues.put(DatabaseHelper.SalesEntry.AMOUNT, Amount);
+        contentValues.put(DatabaseHelper.CommissionsEntry.SALESMAN_ID, salesmanId);
+        contentValues.put(DatabaseHelper.CommissionsEntry.REGION_ID, regionId);
+        contentValues.put(DatabaseHelper.CommissionsEntry.YEAR, year);
+        contentValues.put(DatabaseHelper.CommissionsEntry.MONTH, month);
+        contentValues.put(DatabaseHelper.SalesEntry.AMOUNT, amount);
         return contentValues;
     }
 }

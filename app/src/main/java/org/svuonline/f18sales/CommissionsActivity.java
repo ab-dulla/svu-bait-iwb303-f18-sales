@@ -21,18 +21,16 @@ import android.widget.TextView;
 import org.svuonline.f18sales.data.DatabaseHelper;
 import org.svuonline.f18sales.data.Utilities;
 import org.svuonline.f18sales.model.Commission;
-import org.svuonline.f18sales.model.Sale;
 import org.svuonline.f18sales.model.Salesman;
 import org.svuonline.f18sales.salesmen.management.SalesmenSpinnerArrayAdapter;
+
 import java.io.File;
 import java.util.ArrayList;
 
 
 public class CommissionsActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
-
-    TableLayout tableRegionsCommissions;
-    DatabaseHelper dbHelper;
-//    private SQLiteDatabase db;
+    private TableLayout tableRegionsCommissions;
+    private DatabaseHelper dbHelper;
 
     private Spinner spinnerSalesmen;
     private Spinner spinnerYears;
@@ -51,19 +49,16 @@ public class CommissionsActivity extends AppCompatActivity implements View.OnCli
      ******************************************************/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_commissions);
         getSupportActionBar().setTitle("العمولات");
         dbHelper = new DatabaseHelper(this);
 
-        FindElements();
+        findElements();
         fillSalesmen();
-        FillYears();
-        FillMonths();
-        SetControlsEvents();
-
-
+        fillYears();
+        fillMonths();
+        setControlsEvents();
     }
 
     @Override
@@ -72,30 +67,39 @@ public class CommissionsActivity extends AppCompatActivity implements View.OnCli
             if (ValidateInputs()) {
                 Salesman selectedSalesman = (Salesman) spinnerSalesmen.getSelectedItem();
                 selectedSalesman = dbHelper.getSalesmenById(selectedSalesman.getId());
-                //FillSalesmanInfo(selectedSalesman);
-                FillCommissionInfo(selectedSalesman.getId());
+                fillCommissionInfo(selectedSalesman.getId());
             } else {
                 Utilities.showMessage(this, "", "عفواً، يجب أن تقوم بإدخال جميع معايير البحث");
             }
         }
-
-
-
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (position == 0) {
+            clearSalesmanInfo();
+        } else {
+            Salesman selectedSalesman = (Salesman) spinnerSalesmen.getSelectedItem();
+            selectedSalesman = dbHelper.getSalesmenById(selectedSalesman.getId());
+            fillSalesmanInfo(selectedSalesman);
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        // do nothing
+    }
 
     /******************************************************
      **************      Private Methods      *************
      ******************************************************/
     private boolean ValidateInputs() {
-        boolean result = true;
-        if (spinnerSalesmen.getSelectedItemPosition() == 0 || spinnerYears.getSelectedItemPosition() == 0 || spinnerMonths.getSelectedItemPosition() == 0) {
-            result = false;
-        }
-        return result;
+        return spinnerSalesmen.getSelectedItemPosition() != 0 &&
+                spinnerYears.getSelectedItemPosition() != 0 &&
+                spinnerMonths.getSelectedItemPosition() != 0;
     }
 
-    private void FindElements() {
+    private void findElements() {
         spinnerSalesmen = findViewById(R.id.spinnerSalesmen);
         spinnerYears = findViewById(R.id.spinnerYears);
         spinnerMonths = findViewById(R.id.spinnerMonths);
@@ -109,34 +113,30 @@ public class CommissionsActivity extends AppCompatActivity implements View.OnCli
         tableRegionsCommissions = findViewById(R.id.tableRegionsCommissions);
     }
 
-    private void SetControlsEvents() {
+    private void setControlsEvents() {
         btnSearch.setOnClickListener(this);
         spinnerSalesmen.setOnItemSelectedListener(this);
     }
 
     private void fillSalesmen() {
-        //db = openOrCreateDatabase("f18SalesDb",Context.MODE_PRIVATE, null);
-//        ArrayList<Salesman> salesmenList =  dbHelper.getSalesmenList(db);
         ArrayList<Salesman> salesmenList = dbHelper.getSalesmenList();
         SalesmenSpinnerArrayAdapter salesmenAdapter = new SalesmenSpinnerArrayAdapter(this, salesmenList);
         spinnerSalesmen.setAdapter(salesmenAdapter);
     }
 
-    private void FillYears() {
+    private void fillYears() {
         ArrayList<String> years = Utilities.GetYearsList();
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, years);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, years);
         spinnerYears.setAdapter(adapter);
     }
 
-    private void FillMonths() {
+    private void fillMonths() {
         ArrayList<String> months = Utilities.GetMonthsList();
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, months);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, months);
         spinnerMonths.setAdapter(adapter);
     }
 
-    private void FillSalesmanInfo(Salesman salesman) {
+    private void fillSalesmanInfo(Salesman salesman) {
         txtId.setText(salesman.getId().toString());
         txtName.setText(salesman.getFullName());
         txtHiringDate.setText(salesman.getHiringDate());
@@ -148,11 +148,11 @@ public class CommissionsActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    private void FillCommissionInfo(int salesmanId) {
-        totalCommission=0;
+    private void fillCommissionInfo(int salesmanId) {
+        totalCommission = 0;
         txtYear.setText(spinnerYears.getSelectedItem().toString());
         txtMonth.setText(spinnerMonths.getSelectedItem().toString());
-        ArrayList<Commission> CommissionsList = dbHelper.GetSalesmanCommissions(salesmanId,spinnerYears.getSelectedItem().toString(), spinnerMonths.getSelectedItem().toString());
+        ArrayList<Commission> CommissionsList = dbHelper.getSalesmanCommissions(salesmanId, spinnerYears.getSelectedItem().toString(), spinnerMonths.getSelectedItem().toString());
         tableRegionsCommissions.removeAllViews();
         addHeaders();
         addData(CommissionsList);
@@ -175,7 +175,7 @@ public class CommissionsActivity extends AppCompatActivity implements View.OnCli
             tr.addView(getTextView(i + 1, commissionsList.get(i).getRegionName(), Color.parseColor("#04433a"), Typeface.NORMAL, Color.parseColor("#dbf7f3")));
             tr.addView(getTextView(i + numCompanies, Integer.toString(commissionsList.get(i).getCommissionAmount()), Color.parseColor("#04433a"), Typeface.NORMAL, Color.parseColor("#dbf7f3")));
             tableRegionsCommissions.addView(tr, getTblLayoutParams());
-            totalCommission = totalCommission+commissionsList.get(i).getCommissionAmount();
+            totalCommission = totalCommission + commissionsList.get(i).getCommissionAmount();
         }
     }
 
@@ -189,18 +189,14 @@ public class CommissionsActivity extends AppCompatActivity implements View.OnCli
 
     @NonNull
     private LayoutParams getLayoutParams() {
-        LayoutParams params = new LayoutParams(
-                LayoutParams.MATCH_PARENT,
-                LayoutParams.WRAP_CONTENT);
+        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         params.setMargins(2, 10, 0, 2);
         return params;
     }
 
     @NonNull
     private TableLayout.LayoutParams getTblLayoutParams() {
-        return new TableLayout.LayoutParams(
-                LayoutParams.MATCH_PARENT,
-                LayoutParams.WRAP_CONTENT);
+        return new TableLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
     }
 
     private TextView getTextView(int id, String title, int color, int typeface, int bgColor) {
@@ -216,26 +212,7 @@ public class CommissionsActivity extends AppCompatActivity implements View.OnCli
         return tv;
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (position==0)
-        {
-            ClearSalesmanInfo();
-        }
-        else
-        {
-            Salesman selectedSalesman = (Salesman) spinnerSalesmen.getSelectedItem();
-            selectedSalesman = dbHelper.getSalesmenById(selectedSalesman.getId());
-            FillSalesmanInfo(selectedSalesman);
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
-
-    private void ClearSalesmanInfo() {
+    private void clearSalesmanInfo() {
         txtId.setText("");
         txtName.setText("");
         txtHiringDate.setText("");

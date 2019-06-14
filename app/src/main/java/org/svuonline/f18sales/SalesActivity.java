@@ -30,9 +30,8 @@ import java.util.ArrayList;
 
 public class SalesActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
-    TableLayout tableRegionsSales;
-    DatabaseHelper dbHelper;
-//    private SQLiteDatabase db;
+    private TableLayout tableRegionsSales;
+    private DatabaseHelper dbHelper;
 
     private Spinner spinnerSalesmen;
     private Spinner spinnerYears;
@@ -50,46 +49,56 @@ public class SalesActivity extends AppCompatActivity implements View.OnClickList
      ******************************************************/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sales);
         getSupportActionBar().setTitle("المبيعات");
         dbHelper = new DatabaseHelper(this);
-
-        FindElements();
+        findElements();
         fillSalesmen();
-        FillYears();
-        FillMonths();
-        SetControlsEvents();
+        fillYears();
+        fillMonths();
+        setControlsEvents();
     }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btnSearch) {
-            if (ValidateInputs()) {
+            if (validateInputs()) {
                 Salesman selectedSalesman = (Salesman) spinnerSalesmen.getSelectedItem();
                 selectedSalesman = dbHelper.getSalesmenById(selectedSalesman.getId());
-                //FillSalesmanInfo(selectedSalesman);
-                FillSalesInfo(selectedSalesman.getId());
+                fillSalesInfo(selectedSalesman.getId());
             } else {
                 Utilities.showMessage(this, "", "عفواً، يجب أن تقوم بإدخال جميع معايير البحث");
             }
         }
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (position == 0) {
+            ClearSalesmanInfo();
+        } else {
+            Salesman selectedSalesman = (Salesman) spinnerSalesmen.getSelectedItem();
+            selectedSalesman = dbHelper.getSalesmenById(selectedSalesman.getId());
+            fillSalesmanInfo(selectedSalesman);
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        // do nothing
+    }
 
     /******************************************************
      **************      Private Methods      *************
      ******************************************************/
-    private boolean ValidateInputs() {
-        boolean result = true;
-        if (spinnerSalesmen.getSelectedItemPosition() == 0 || spinnerYears.getSelectedItemPosition() == 0 || spinnerMonths.getSelectedItemPosition() == 0) {
-            result = false;
-        }
-        return result;
+    private boolean validateInputs() {
+        return spinnerSalesmen.getSelectedItemPosition() != 0 &&
+                spinnerYears.getSelectedItemPosition() != 0 &&
+                spinnerMonths.getSelectedItemPosition() != 0;
     }
 
-    private void FindElements() {
+    private void findElements() {
         spinnerSalesmen = findViewById(R.id.spinnerSalesmen);
         spinnerYears = findViewById(R.id.spinnerYears);
         spinnerMonths = findViewById(R.id.spinnerMonths);
@@ -103,34 +112,30 @@ public class SalesActivity extends AppCompatActivity implements View.OnClickList
         tableRegionsSales = findViewById(R.id.tableRegionsSales);
     }
 
-    private void SetControlsEvents() {
+    private void setControlsEvents() {
         btnSearch.setOnClickListener(this);
         spinnerSalesmen.setOnItemSelectedListener(this);
     }
 
     private void fillSalesmen() {
-        //db = openOrCreateDatabase("f18SalesDb",Context.MODE_PRIVATE, null);
-//        ArrayList<Salesman> salesmenList =  dbHelper.getSalesmenList(db);
         ArrayList<Salesman> salesmenList = dbHelper.getSalesmenList();
         SalesmenSpinnerArrayAdapter salesmenAdapter = new SalesmenSpinnerArrayAdapter(this, salesmenList);
         spinnerSalesmen.setAdapter(salesmenAdapter);
     }
 
-    private void FillYears() {
+    private void fillYears() {
         ArrayList<String> years = Utilities.GetYearsList();
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, years);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, years);
         spinnerYears.setAdapter(adapter);
     }
 
-    private void FillMonths() {
+    private void fillMonths() {
         ArrayList<String> months = Utilities.GetMonthsList();
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, months);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, months);
         spinnerMonths.setAdapter(adapter);
     }
 
-    private void FillSalesmanInfo(Salesman salesman) {
+    private void fillSalesmanInfo(Salesman salesman) {
         txtId.setText(salesman.getId().toString());
         txtName.setText(salesman.getFullName());
         txtHiringDate.setText(salesman.getHiringDate());
@@ -142,10 +147,10 @@ public class SalesActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void FillSalesInfo(int salesmanId) {
+    private void fillSalesInfo(int salesmanId) {
         txtYear.setText(spinnerYears.getSelectedItem().toString());
         txtMonth.setText(spinnerMonths.getSelectedItem().toString());
-        ArrayList<Sale> salesList = dbHelper.GetSalesmanSales(salesmanId, spinnerYears.getSelectedItem().toString(), spinnerMonths.getSelectedItem().toString());
+        ArrayList<Sale> salesList = dbHelper.getSalesmanSales(salesmanId, spinnerYears.getSelectedItem().toString(), spinnerMonths.getSelectedItem().toString());
         tableRegionsSales.removeAllViews();
         addHeaders();
         addData(salesList);
@@ -172,18 +177,14 @@ public class SalesActivity extends AppCompatActivity implements View.OnClickList
 
     @NonNull
     private LayoutParams getLayoutParams() {
-        LayoutParams params = new LayoutParams(
-                LayoutParams.MATCH_PARENT,
-                LayoutParams.WRAP_CONTENT);
+        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         params.setMargins(2, 10, 0, 2);
         return params;
     }
 
     @NonNull
     private TableLayout.LayoutParams getTblLayoutParams() {
-        return new TableLayout.LayoutParams(
-                LayoutParams.MATCH_PARENT,
-                LayoutParams.WRAP_CONTENT);
+        return new TableLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
     }
 
     private TextView getTextView(int id, String title, int color, int typeface, int bgColor) {
@@ -197,25 +198,6 @@ public class SalesActivity extends AppCompatActivity implements View.OnClickList
         tv.setBackgroundColor(bgColor);
         tv.setLayoutParams(getLayoutParams());
         return tv;
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (position==0)
-        {
-            ClearSalesmanInfo();
-        }
-        else
-        {
-            Salesman selectedSalesman = (Salesman) spinnerSalesmen.getSelectedItem();
-            selectedSalesman = dbHelper.getSalesmenById(selectedSalesman.getId());
-            FillSalesmanInfo(selectedSalesman);
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
     }
 
     private void ClearSalesmanInfo() {

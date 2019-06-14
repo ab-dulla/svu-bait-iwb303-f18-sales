@@ -82,12 +82,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    /*
-     *
-     * Regions
-     *
-     * */
-
     public ArrayList<Region> getAllRegions() {
         SQLiteDatabase db = this.getReadableDatabase();
         String selectSql = "SELECT " + RegionEntry._ID + ", " + RegionEntry.NAME + " FROM " + RegionEntry.TABLE_NAME;
@@ -121,12 +115,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(RegionEntry.NAME, region);
         regionDb.insert(RegionEntry.TABLE_NAME, null, contentValues);
     }
-
-    /*
-     *
-     * Salesman
-     *
-     * */
 
     public ArrayList<Salesman> getAllSalesmen() {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -170,12 +158,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[]{salesman.getId().toString()});
     }
 
-    public int UpdateCommession(Commission commission) {
+    public int updateCommission(Commission commission) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.update(CommissionsEntry.TABLE_NAME,
                 commission.ToContentValues(),
-                CommissionsEntry.SALESMAN_ID + " = ? and " + CommissionsEntry.REGION_ID + " = ? and "+CommissionsEntry.YEAR + " = ? and "+ CommissionsEntry.MONTH + " = ?",
-                new String[]{Integer.toString(commission.getSalesmanId()),Integer.toString(commission.getRegionId()),commission.getYear().toString(),commission.getMonth().toString()});
+                CommissionsEntry.SALESMAN_ID + " = ? and " + CommissionsEntry.REGION_ID + " = ? and " + CommissionsEntry.YEAR + " = ? and " + CommissionsEntry.MONTH + " = ?",
+                new String[]{Integer.toString(commission.getSalesmanId()), Integer.toString(commission.getRegionId()), commission.getYear(), commission.getMonth()});
     }
 
     public int deleteSalesman(Salesman salesman) {
@@ -201,7 +189,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return salesmen.get(0);
     }
 
-    //    public ArrayList<Salesman> getSalesmenList(SQLiteDatabase db) {
     public ArrayList<Salesman> getSalesmenList() {
         SQLiteDatabase db = this.getReadableDatabase();
         String selectSql = "SELECT "
@@ -225,12 +212,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.insert(SalesEntry.TABLE_NAME, null, sale.ToContentValues());
     }
 
-    public long InsertCommessoin(Commission commission) {
+    public long insertCommission(Commission commission) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.insert(CommissionsEntry.TABLE_NAME, null, commission.ToContentValues());
     }
 
-    public ArrayList<Sale> GetSalesmanSales(int salesmanId, String year, String month) {
+    public ArrayList<Sale> getSalesmanSales(int salesmanId, String year, String month) {
         SQLiteDatabase db = this.getReadableDatabase();
         String selectSql =
                 "SELECT R.name as RegionName, IFNULL(SUM(S.amount),0) AS 'Amount'" +
@@ -256,7 +243,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return salesList;
     }
 
-    public ArrayList<Commission> GetSalesmanCommissions(int salesmanId, String year, String month) {
+    public ArrayList<Commission> getSalesmanCommissions(int salesmanId, String year, String month) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String selectSql =
@@ -283,7 +270,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return commissionList;
     }
 
-    public int GetSalesmanTotalSalesByRegionAndYearAndMoth(int salesmanId, int regionId, String year, String month) {
+    public int getSalesmanTotalSalesByRegionAndYearAndMoth(int salesmanId, int regionId, String year, String month) {
         SQLiteDatabase db = this.getReadableDatabase();
         String selectSql =
                 "SELECT SUM(S.amount)as Amount " +
@@ -305,15 +292,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public int GetSalesmanCommessionByRegionAndYearAndMoth(int salesmanId, int regionId, String year, String month) {
+    public int getSalesmanCommissionByRegionAndYearAndMoth(int salesmanId, int regionId, String year, String month) {
         SQLiteDatabase db = this.getReadableDatabase();
         String selectSql =
                 "SELECT amount " +
                         "FROM " + CommissionsEntry.TABLE_NAME +
                         " where " + CommissionsEntry.SALESMAN_ID + "=" + salesmanId +
                         " and " + CommissionsEntry.REGION_ID + "=" + regionId +
-                        " and " + CommissionsEntry.YEAR + "='" + year +"'"+
-                        " and " + CommissionsEntry.MONTH + "='" + month+"'";
+                        " and " + CommissionsEntry.YEAR + "='" + year + "'" +
+                        " and " + CommissionsEntry.MONTH + "='" + month + "'";
         Cursor cursor = db.rawQuery(selectSql, null);
         int commessionAmount = 0;
         if (cursor.getCount() > 0) {
@@ -352,8 +339,5 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String REGION_ID = "region_id";
         public static final String AMOUNT = "amount";
         public static final String SALE_DATE = "sale_date";
-//        public static final String MONTH = "month";
-//        public static final String YEAR = "year";
     }
-
 }

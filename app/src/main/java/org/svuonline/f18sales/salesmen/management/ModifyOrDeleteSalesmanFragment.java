@@ -33,9 +33,9 @@ import java.util.ArrayList;
 
 import static android.text.TextUtils.isEmpty;
 
-public class ModifySalesmanFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class ModifyOrDeleteSalesmanFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
-    private static final String TAG = ModifySalesmanFragment.class.getName();
+    private static final String TAG = ModifyOrDeleteSalesmanFragment.class.getName();
     private static final int GALLERY_REQUEST_CODE = 406;
     private static final String IMAGE_PREFIX = "image_";
 
@@ -49,17 +49,18 @@ public class ModifySalesmanFragment extends Fragment implements AdapterView.OnIt
     private Spinner spinnerRegions;
     private EditText editTextHiringDate;
     private Button buttonModifySalesman;
+    private Button buttonDeleteSalesman;
 
-    public ModifySalesmanFragment() {
+    public ModifyOrDeleteSalesmanFragment() {
     }
 
-    public static ModifySalesmanFragment newInstance() {
-        return new ModifySalesmanFragment();
+    public static ModifyOrDeleteSalesmanFragment newInstance() {
+        return new ModifyOrDeleteSalesmanFragment();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_modify_salesman, container, false);
+        View v = inflater.inflate(R.layout.fragment_modify_or_delete_salesman, container, false);
 
         dbHelper = new DatabaseHelper(getContext());
 
@@ -70,6 +71,7 @@ public class ModifySalesmanFragment extends Fragment implements AdapterView.OnIt
 
         spinnerSalesmen.setOnItemSelectedListener(this);
         setModifySalesmanButtonOnClickListener();
+        setDeleteSalesmanButtonOnClickListener();
         return v;
     }
 
@@ -103,6 +105,7 @@ public class ModifySalesmanFragment extends Fragment implements AdapterView.OnIt
         spinnerRegions = v.findViewById(R.id.spinner_region);
         editTextHiringDate = v.findViewById(R.id.editText_hiring_date);
         buttonModifySalesman = v.findViewById(R.id.button_modify_salesman);
+        buttonDeleteSalesman = v.findViewById(R.id.button_delete_salesman);
     }
 
     private void setImageUploadOnClickListener(View v) {
@@ -144,6 +147,32 @@ public class ModifySalesmanFragment extends Fragment implements AdapterView.OnIt
                     }
                 } else {
                     Toast.makeText(getContext(), "الرجاء تعبئة جميع الحقول بما فيهم الصورة", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    private void setDeleteSalesmanButtonOnClickListener() {
+        // delete the selected salesman
+        buttonDeleteSalesman.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    if (spinnerSalesmen.getCount() == 0) {
+                        Toast.makeText(getContext(), "لا يوجد أي مندوب مبيعات ليتم حذفه", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    Salesman selectedSalesman = (Salesman) spinnerSalesmen.getSelectedItem();
+                    boolean deleted = dbHelper.deleteSalesman(selectedSalesman) != -1;
+                    if (deleted) {
+                        Utilities.showMessage(getContext(), "نجاح", "تمت حذف مندوب المبيعات بنجاح");
+                        fillSalesmenSpinnerWithData();
+                    } else {
+                        Utilities.showMessage(getContext(), "فشل", "فشل حذف مندوب المبيعات");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Utilities.showMessage(getContext(), "فشل", "حدث خطأ غير متوقع خلال محاولة حذف المندوب");
                 }
             }
         });

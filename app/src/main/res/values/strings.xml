@@ -2,8 +2,7 @@
     <string name="app_name">F18 Sales</string>
     <string name="title_activity_salesmen_management">SalesmenManagementActivity</string>
     <string name="tab_text_add">إضافة</string>
-    <string name="tab_text_modify">تعديل</string>
-    <string name="tab_text_delete">حذف</string>
+    <string name="tab_text_modify_or_delete">تعديل أو حذف</string>
     <string name="Select_Salesman">-- اختر المندوب --</string>
     <string name="text_hiring_date">-- تاريخ التوظيف --</string>
     <string name="text_add_salesman">إضافة مندوب</string>

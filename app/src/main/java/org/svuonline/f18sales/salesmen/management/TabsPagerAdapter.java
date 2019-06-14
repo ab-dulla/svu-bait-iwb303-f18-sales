@@ -16,7 +16,7 @@ import org.svuonline.f18sales.R;
 public class TabsPagerAdapter extends FragmentPagerAdapter {
 
     @StringRes
-    private static final int[] TAB_TITLES = new int[]{R.string.tab_text_add, R.string.tab_text_modify, R.string.tab_text_delete};
+    private static final int[] TAB_TITLES = new int[]{R.string.tab_text_add, R.string.tab_text_modify_or_delete};
     private final Context mContext;
 
     public TabsPagerAdapter(Context context, FragmentManager fm) {
@@ -30,9 +30,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return AddSalesmanFragment.newInstance();
             case 1:
-                return ModifySalesmanFragment.newInstance();
-            case 2:
-                return DeleteSalesmanFragment.newInstance();
+                return ModifyOrDeleteSalesmanFragment.newInstance();
             default:
                 return null;
         }
@@ -46,6 +44,6 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 2;
     }
 }

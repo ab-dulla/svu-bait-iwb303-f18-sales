@@ -12,37 +12,29 @@ public class Salesman {
     private final String hiringDate;
     private final String imagePath;
 
-    // `newId` is used for updating the `id` in the UPDATE sql command
-    // Both `id` and `newId` are needed in the UPDATE command
-    private final Integer newId;
-
     // constructor used for initializing a salesman for UPDATE sql command
-    public Salesman(Integer id, String fullName, int regionId, String hiringDate, String imagePath, Integer newId) {
+    public Salesman(Integer id, String fullName, int regionId, String hiringDate, String imagePath) {
         this.id = id;
         this.fullName = fullName;
         this.regionId = regionId;
         this.hiringDate = hiringDate;
         this.imagePath = imagePath;
-        this.newId = newId;
     }
 
     // constructor used for initializing a salesman for INSERT sql command
+    // no need for an id --> auto-generated
     public Salesman(String fullName, int regionId, String hiringDate, String imagePath) {
-        this(null, fullName, regionId, hiringDate, imagePath, null);
+        this(null, fullName, regionId, hiringDate, imagePath);
     }
 
-    // constructor used for initializing salesmen for a SELECT sql command
-    public Salesman(Integer id, String fullName, int regionId, String hiringDate, String imagePath) {
-        this(id, fullName, regionId, hiringDate, imagePath, null);
-    }
-
+    // for placeholder usage only
     public Salesman(Integer id, String fullName) {
         this(id, fullName, 1, null, null);
     }
 
     @Override
     public String toString() {
-        return id + fullName + regionId + hiringDate + imagePath;
+        return id + fullName + regionId + hiringDate;
     }
 
     public Integer getId() {
@@ -67,11 +59,8 @@ public class Salesman {
 
     public ContentValues toContentValues() {
         ContentValues contentValues = new ContentValues();
-
-        // Add `newId` to contentValues only if we UPDATE the salesman in the DB
-        // `newId` is not needed for salesman INSERT sql command
-        if (newId != null) {
-            contentValues.put(SalesmanEntry._ID, newId);
+        if (id != null) {
+            contentValues.put(SalesmanEntry._ID, id);
         }
         contentValues.put(SalesmanEntry.FULL_NAME, fullName);
         contentValues.put(SalesmanEntry.REGION_ID, regionId);

@@ -132,7 +132,7 @@ public class AddSalesmanFragment extends Fragment {
         // regions is always valid (it has a default value).
         return imageView.getDrawable() != null &&
                 !isEmpty(editTextFullName.getText().toString()) &&
-                !editTextHiringDate.getText().toString().equals(getString(R.string.text_hiring_date));
+                !isEmpty(editTextHiringDate.getText().toString());
     }
 
     private boolean addSalesman() {

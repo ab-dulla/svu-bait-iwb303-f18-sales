@@ -49,14 +49,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + CommissionsEntry.YEAR + " TEXT NOT NULL, "
             + CommissionsEntry.MONTH + " TEXT NOT NULL, "
             + CommissionsEntry.AMOUNT + " INTEGER,"
-            + " FOREIGN KEY(" + CommissionsEntry.SALESMAN_ID + ") REFERENCES " + SalesmanEntry.TABLE_NAME + "(" + SalesmanEntry._ID + "),"
-            + " FOREIGN KEY(" + CommissionsEntry.REGION_ID + ") REFERENCES " + RegionEntry.TABLE_NAME + "(" + RegionEntry._ID + ")"
+            + " FOREIGN KEY(" + CommissionsEntry.SALESMAN_ID + ") REFERENCES " + SalesmanEntry.TABLE_NAME + "(" + SalesmanEntry._ID + ") ON UPDATE CASCADE,"
+            + " FOREIGN KEY(" + CommissionsEntry.REGION_ID + ") REFERENCES " + RegionEntry.TABLE_NAME + "(" + RegionEntry._ID + ") ON UPDATE CASCADE"
             + ");";
 
     private static final String SQL_DELETE_REGIONS = "DROP TABLE IF EXISTS " + RegionEntry.TABLE_NAME;
     private static final String SQL_DELETE_SALESMAN = "DROP TABLE IF EXISTS " + SalesmanEntry.TABLE_NAME;
     private static final String SQL_DELETE_SALES = "DROP TABLE IF EXISTS " + SalesEntry.TABLE_NAME;
-    private static final String SQL_DELETE_COMMESSIONS = "DROP TABLE IF EXISTS " + CommissionsEntry.TABLE_NAME;
+    private static final String SQL_DELETE_COMMISSIONS = "DROP TABLE IF EXISTS " + CommissionsEntry.TABLE_NAME;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -64,11 +64,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL("PRAGMA foreign_keys = ON");
         db.execSQL(SQL_CREATE_REGIONS);
         db.execSQL(SQL_CREATE_SALESMAN);
         db.execSQL(SQL_CREATE_SALES);
         db.execSQL(SQL_CREATE_COMMISSIONS);
-//        db.execSQL("PRAGMA foreign_keys = ON;");
         insertDefaultRegions(db);
     }
 
@@ -77,8 +77,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_REGIONS);
         db.execSQL(SQL_DELETE_SALESMAN);
         db.execSQL(SQL_DELETE_SALES);
-        db.execSQL(SQL_DELETE_COMMESSIONS);
-//        db.execSQL("PRAGMA foreign_keys = ON;");
+        db.execSQL(SQL_DELETE_COMMISSIONS);
         onCreate(db);
     }
 
@@ -150,12 +149,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.insert(SalesmanEntry.TABLE_NAME, null, salesman.toContentValues());
     }
 
-    public int updateSalesman(Salesman salesman) {
+    public int updateSalesman(String oldSalesmanId, Salesman newSalesman) {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.update(SalesmanEntry.TABLE_NAME,
-                salesman.toContentValues(),
+        int updateResult = db.update(SalesmanEntry.TABLE_NAME,
+                newSalesman.toContentValues(),
                 SalesmanEntry._ID + " = ?",
-                new String[]{salesman.getId().toString()});
+                new String[]{oldSalesmanId});
+
+        boolean onFieldSuccessfullyUpdated = updateResult == 1;
+        if (onFieldSuccessfullyUpdated && !oldSalesmanId.equals(newSalesman.getId().toString())) {
+            // update the salesman_id in Sales and commissions tables
+            updateSalesmanIdInCommissionsAndSales(oldSalesmanId, newSalesman.getId().toString());
+        }
+        return updateResult;
+    }
+
+    private void updateSalesmanIdInCommissionsAndSales(String oldSalesmanId, String newSalesmanId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("UPDATE " + CommissionsEntry.TABLE_NAME + " SET " + CommissionsEntry.SALESMAN_ID + " = " + newSalesmanId +
+                " WHERE " + CommissionsEntry.SALESMAN_ID + " = " + oldSalesmanId);
+        db.execSQL("UPDATE " + SalesEntry.TABLE_NAME + " SET " + SalesEntry.SALESMAN_ID + " = " + newSalesmanId +
+                " WHERE " + SalesEntry.SALESMAN_ID + " = " + oldSalesmanId);
     }
 
     public int updateCommission(Commission commission) {
@@ -173,7 +187,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[]{salesman.getId().toString()});
     }
 
-    public Salesman getSalesmenById(Integer id) {
+    public ArrayList<Salesman> getSalesmenList() {
         SQLiteDatabase db = this.getReadableDatabase();
         String selectSql = "SELECT "
                 + SalesmanEntry._ID + ", "
@@ -181,27 +195,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + SalesmanEntry.REGION_ID + ", "
                 + SalesmanEntry.HIRING_DATE + ", "
                 + SalesmanEntry.IMAGE_PATH
-                + " FROM " + SalesmanEntry.TABLE_NAME
-                + " where _id=" + id.toString();
-        Cursor cursor = db.rawQuery(selectSql, null);
-        ArrayList<Salesman> salesmen = parseSalesmen(cursor);
-        cursor.close();
-        return salesmen.get(0);
-    }
-
-    public ArrayList<Salesman> getSalesmenList() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String selectSql = "SELECT "
-                + DatabaseHelper.SalesmanEntry._ID + ", "
-                + DatabaseHelper.SalesmanEntry.FULL_NAME
-                + " FROM " + DatabaseHelper.SalesmanEntry.TABLE_NAME;
+                + " FROM " + SalesmanEntry.TABLE_NAME;
         Cursor cursor = db.rawQuery(selectSql, null);
         ArrayList<Salesman> salesmen = new ArrayList<>();
         salesmen.add(new Salesman(-1, "-- اسم المندوب --"));
         while (cursor.moveToNext()) {
             int id = cursor.getInt(0);
             String fullName = cursor.getString(1);
-            salesmen.add(new Salesman(id, fullName));
+            int regionId = cursor.getInt(2);
+            String hiringDate = cursor.getString(3);
+            String imagePath = cursor.getString(4);
+            salesmen.add(new Salesman(id, fullName, regionId, hiringDate, imagePath));
         }
         cursor.close();
         return salesmen;
@@ -302,13 +306,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         " and " + CommissionsEntry.YEAR + "='" + year + "'" +
                         " and " + CommissionsEntry.MONTH + "='" + month + "'";
         Cursor cursor = db.rawQuery(selectSql, null);
-        int commessionAmount = 0;
+        int commissionAmount = 0;
         if (cursor.getCount() > 0) {
             cursor.moveToNext();
-            commessionAmount = cursor.getInt(0);
+            commissionAmount = cursor.getInt(0);
         }
         cursor.close();
-        return commessionAmount;
+        return commissionAmount;
     }
 
     public static class RegionEntry implements BaseColumns {

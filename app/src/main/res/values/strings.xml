@@ -19,4 +19,17 @@
     <string name="text_amount_s_p">-- المبلغ (ل.س) --</string>
     <string name="text_sale_details">تفاصيل عملية البيع</string>
     <string name="text_save">حفظ</string>
+    <string name="text_salesman_data">بيانات المندوب</string>
+    <string name="text_salesman_id_label">رقم المندوب:</string>
+    <string name="text_name_label">الاسم:</string>
+    <string name="text_hiring_date_label">تاريخ التسجيل:</string>
+    <string name="text_registering_date_label">تاريخ التسجيل:</string>
+    <string name="text_commission_details_label">تفاصيل العمولات</string>
+    <string name="text_date_label">السنة:</string>
+    <string name="text_month_label">الشهر:</string>
+    <string name="text_personal_information">المعلومات الشخصية</string>
+    <string name="text_search_criteria">معايير البحث</string>
+    <string name="text_search">بحث</string>
+    <string name="text_sales_details_label">تفاصيل المبيعات</string>
+    <string name="text_year_label">السنة:</string>
 </resources>

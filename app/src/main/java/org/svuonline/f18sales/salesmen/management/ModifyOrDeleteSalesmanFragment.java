@@ -166,7 +166,7 @@ public class ModifyOrDeleteSalesmanFragment extends Fragment implements AdapterV
                     boolean deleted = dbHelper.deleteSalesman(selectedSalesman) != -1;
                     if (deleted) {
                         Utilities.showMessage(getContext(), "نجاح", "تمت حذف مندوب المبيعات بنجاح");
-                        fillSalesmenSpinnerWithData();
+                        refreshPageContent();
                     } else {
                         Utilities.showMessage(getContext(), "فشل", "فشل حذف مندوب المبيعات");
                     }
@@ -180,7 +180,7 @@ public class ModifyOrDeleteSalesmanFragment extends Fragment implements AdapterV
 
     private boolean isValid() {
         // regions has a default value (always valid)
-        // Hiring date editText is not editable --> its value will not change (always valid)
+        // Hiring date editText is not editable in this page --> its value will not change (always valid)
         // editTextSalesmanId has android:inputType="number" --> no need to do an extra check for an integer
         return spinnerSalesmen.getCount() > 0 &&
                 imageView.getDrawable() != null &&
@@ -190,16 +190,15 @@ public class ModifyOrDeleteSalesmanFragment extends Fragment implements AdapterV
 
     private boolean modifySalesman() {
         try {
-            // `id` and `newId` are needed in the sql UPDATE command
-            Integer id = ((Salesman) spinnerSalesmen.getSelectedItem()).getId();
-            Integer newId = Integer.valueOf(editTextSalesmanId.getText().toString());
+            String oldSalesmanId = ((Salesman) spinnerSalesmen.getSelectedItem()).getId().toString();
+            Integer id = Integer.valueOf(editTextSalesmanId.getText().toString());
             String fullName = editTextFullName.getText().toString();
             Region region = (Region) spinnerRegions.getSelectedItem();
             String hiringDate = editTextHiringDate.getText().toString();
             String imagePath = saveImageInFilesDirectory(fullName);
             if (imagePath != null) {
-                Salesman salesman = new Salesman(id, fullName, region.getId(), hiringDate, imagePath, newId);
-                return dbHelper.updateSalesman(salesman) != -1;
+                Salesman newSalesman = new Salesman(id, fullName, region.getId(), hiringDate, imagePath);
+                return dbHelper.updateSalesman(oldSalesmanId, newSalesman) != -1;
             }
         } catch (Exception e) {
             e.printStackTrace();

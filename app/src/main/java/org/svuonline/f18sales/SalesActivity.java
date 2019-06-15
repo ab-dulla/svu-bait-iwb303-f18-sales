@@ -65,7 +65,6 @@ public class SalesActivity extends AppCompatActivity implements View.OnClickList
         if (v.getId() == R.id.btnSearch) {
             if (validateInputs()) {
                 Salesman selectedSalesman = (Salesman) spinnerSalesmen.getSelectedItem();
-                selectedSalesman = dbHelper.getSalesmenById(selectedSalesman.getId());
                 fillSalesInfo(selectedSalesman.getId());
             } else {
                 Utilities.showMessage(this, "", "عفواً، يجب أن تقوم بإدخال جميع معايير البحث");
@@ -79,7 +78,6 @@ public class SalesActivity extends AppCompatActivity implements View.OnClickList
             ClearSalesmanInfo();
         } else {
             Salesman selectedSalesman = (Salesman) spinnerSalesmen.getSelectedItem();
-            selectedSalesman = dbHelper.getSalesmenById(selectedSalesman.getId());
             fillSalesmanInfo(selectedSalesman);
         }
     }
@@ -165,12 +163,12 @@ public class SalesActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void addData(ArrayList<Sale> salesList) {
-        int numCompanies = salesList.size();
-        for (int i = 0; i < numCompanies; i++) {
+        int salesCount = salesList.size();
+        for (int i = 0; i < salesCount; i++) {
             TableRow tr = new TableRow(this);
             tr.setLayoutParams(getLayoutParams());
             tr.addView(getTextView(i + 1, salesList.get(i).getRegionName(), Color.parseColor("#04433a"), Typeface.NORMAL, Color.parseColor("#dbf7f3")));
-            tr.addView(getTextView(i + numCompanies, Integer.toString(salesList.get(i).getAmount()), Color.parseColor("#04433a"), Typeface.NORMAL, Color.parseColor("#dbf7f3")));
+            tr.addView(getTextView(i + salesCount, Integer.toString(salesList.get(i).getAmount()), Color.parseColor("#04433a"), Typeface.NORMAL, Color.parseColor("#dbf7f3")));
             tableRegionsSales.addView(tr, getTblLayoutParams());
         }
     }

@@ -31,6 +31,7 @@
             android:adjustViewBounds="true"
             android:background="#F5F5F8"
             android:clickable="true"
+            android:contentDescription="@string/text_salesman_data"
             android:cropToPadding="true"
             android:focusable="true"
             app:layout_constraintEnd_toEndOf="parent"
@@ -49,22 +50,24 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="@+id/image"
             app:layout_constraintTop_toTopOf="@+id/image"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintVertical_bias="1.0"
+            tools:ignore="KeyboardInaccessibleWidget" />
 
         <EditText
             android:id="@+id/editText_salesman_id"
             android:layout_width="wrap_content"
-            android:gravity="end"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
             android:ems="10"
+            android:gravity="center"
             android:hint="@string/text_salesman_id"
             android:inputType="number"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/image" />
+            app:layout_constraintTop_toBottomOf="@+id/image"
+            tools:ignore="Autofill" />
 
         <EditText
             android:id="@+id/editText_full_name"
@@ -78,7 +81,8 @@
             android:inputType="textPersonName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editText_salesman_id" />
+            app:layout_constraintTop_toBottomOf="@+id/editText_salesman_id"
+            tools:ignore="Autofill" />
 
         <Spinner
             android:id="@+id/spinner_region"
@@ -104,7 +108,8 @@
             android:hint="@string/text_hiring_date_modify"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spinner_region" />
+            app:layout_constraintTop_toBottomOf="@+id/spinner_region"
+            tools:ignore="Autofill,TextFields" />
 
         <Button
             android:id="@+id/button_modify_salesman"

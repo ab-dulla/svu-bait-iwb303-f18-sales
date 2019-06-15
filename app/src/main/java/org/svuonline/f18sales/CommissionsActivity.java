@@ -65,7 +65,6 @@ public class CommissionsActivity extends AppCompatActivity implements View.OnCli
         if (v.getId() == R.id.btnSearch) {
             if (ValidateInputs()) {
                 Salesman selectedSalesman = (Salesman) spinnerSalesmen.getSelectedItem();
-                selectedSalesman = dbHelper.getSalesmenById(selectedSalesman.getId());
                 fillCommissionInfo(selectedSalesman.getId());
             } else {
                 Utilities.showMessage(this, "", "عفواً، يجب أن تقوم بإدخال جميع معايير البحث");
@@ -79,7 +78,6 @@ public class CommissionsActivity extends AppCompatActivity implements View.OnCli
             clearSalesmanInfo();
         } else {
             Salesman selectedSalesman = (Salesman) spinnerSalesmen.getSelectedItem();
-            selectedSalesman = dbHelper.getSalesmenById(selectedSalesman.getId());
             fillSalesmanInfo(selectedSalesman);
         }
     }
@@ -93,9 +91,9 @@ public class CommissionsActivity extends AppCompatActivity implements View.OnCli
      **************      Private Methods      *************
      ******************************************************/
     private boolean ValidateInputs() {
-        return spinnerSalesmen.getSelectedItemPosition() != 0 &&
-                spinnerYears.getSelectedItemPosition() != 0 &&
-                spinnerMonths.getSelectedItemPosition() != 0;
+        return spinnerSalesmen.getSelectedItemPosition() > 0 &&
+                spinnerYears.getSelectedItemPosition() > 0 &&
+                spinnerMonths.getSelectedItemPosition() > 0;
     }
 
     private void findElements() {

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -36,13 +37,14 @@ public class AddSalesActivity extends AppCompatActivity implements View.OnClickL
     private EditText txtSaleDate;
     private EditText txtAmount;
     private Button btnSave;
-    private int regionId;
     private String year;
     private String month;
     private TextView txtName;
     private TextView txtId;
     private TextView txtHiringDate;
     private ImageView imgSalesman;
+
+    private int regionId;
     private int salesmanRegionId;
 
     /******************************************************
@@ -76,7 +78,6 @@ public class AddSalesActivity extends AppCompatActivity implements View.OnClickL
                 if (addSale(salesmanId, regionId)) {
                     addCommission(salesmanId, regionId);
                     ClearInputs();
-                    Utilities.showMessage(this, "", "تم حفظ بيانات المبيعات بنجاح");
                 } else {
                     Utilities.showMessage(this, "", "عفواً، حدث خطأ أثناء حفظ عملية البيع");
                 }
@@ -92,7 +93,6 @@ public class AddSalesActivity extends AppCompatActivity implements View.OnClickL
             ClearSalesmanInfo();
         } else {
             Salesman selectedSalesman = (Salesman) spinnerSalesmen.getSelectedItem();
-            selectedSalesman = dbHelper.getSalesmenById(selectedSalesman.getId());
             fillSalesmanInfo(selectedSalesman);
         }
     }
@@ -108,7 +108,7 @@ public class AddSalesActivity extends AppCompatActivity implements View.OnClickL
 
     private void findElements() {
         spinnerSalesmen = findViewById(R.id.spinnerSalesmen);
-        spinnerRegions = findViewById(R.id.spinnerRegoins);
+        spinnerRegions = findViewById(R.id.spinnerRegions);
         txtSaleDate = findViewById(R.id.txtSaleDate);
         txtAmount = findViewById(R.id.txtAmount);
         txtId = findViewById(R.id.txtId);
@@ -177,7 +177,7 @@ public class AddSalesActivity extends AppCompatActivity implements View.OnClickL
         imgSalesman.setImageBitmap(null);
     }
 
-    private boolean addCommission(int salesmanId, int regionId) {
+    private void addCommission(int salesmanId, int regionId) {
         int commission;
         //Get total sales for sales man by region and year and month
         int totalAmount = dbHelper.getSalesmanTotalSalesByRegionAndYearAndMoth(salesmanId, regionId, year, month);
@@ -202,26 +202,29 @@ public class AddSalesActivity extends AppCompatActivity implements View.OnClickL
             Commission newCommission = new Commission(salesmanId, regionId, year, month, commission);
             if (dbHelper.insertCommission(newCommission) == -1) {
                 Utilities.showMessage(this, "", "عفواً، حدث خطأ أثناء تحديث بيانات العمولة");
-                return false;
+            } else {
+                Utilities.showMessage(this, "", "تم حفظ بيانات المبيعات بنجاح");
             }
         } else {
+            playSound();
             updateCommission(salesmanId, commission);
         }
-        return true;
+
     }
 
-    private boolean updateCommission(final int salesmanId, final int commission) {
-        final boolean[] updateResult = {true};
+    private void updateCommission(final int salesmanId, final int commission) {
+        final AddSalesActivity addSalesActivityContext = this;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder
-                .setMessage("لقد تم احتساب عمولة بشكل مسبق لهذا المندوب في المنطقة التي تم اختيارها في هذا الشهر وهذا السنة، هل تريد إعادة الاحتساب مرة أخرى؟")
+                .setMessage("لقد تم احتساب عمولة بشكل مسبق لهذا المندوب في المنطقة التي تم اختيارها في هذا الشهر وهذه السنة، هل تريد معاودة احتساب العمولات مرة أخرى؟")
                 .setPositiveButton("نعم", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         Commission newCommission = new Commission(salesmanId, regionId, year, month, commission);
                         if (dbHelper.updateCommission(newCommission) == -1) {
-                            updateResult[0] = false;
-                            //Utilities.showMessage(context, "", "عفواً، حدث خطأ أثناء تحديث بيانات العمولة");
+                            Utilities.showMessage(addSalesActivityContext, "", "عفواً، حدث خطأ أثناء تحديث بيانات العمولة");
+                        } else {
+                            Utilities.showMessage(addSalesActivityContext, "", "تم حفظ بيانات المبيعات بنجاح");
                         }
                     }
                 })
@@ -232,7 +235,11 @@ public class AddSalesActivity extends AppCompatActivity implements View.OnClickL
                     }
                 })
                 .show();
+    }
 
-        return updateResult[0];
+    private void playSound() {
+        // warning sound played when another commissions for the same month and year found for a salesman
+        MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.sound);
+        mediaPlayer.start();
     }
 }

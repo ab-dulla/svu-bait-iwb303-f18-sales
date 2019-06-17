@@ -17,7 +17,6 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:background="#02574a"
             android:padding="10dp"
             android:text="@string/text_search_criteria"
@@ -61,36 +60,36 @@
 
         <Button
             android:id="@+id/btnSearch"
-            android:layout_width="100dp"
-            android:layout_height="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
             android:layout_gravity="center"
+            android:layout_margin="8dp"
             android:background="#02574a"
             android:text="@string/text_search"
             android:textColor="@android:color/white"
-            android:textSize="14sp" />
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/txtHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:background="#02574a"
             android:padding="10dp"
-            android:text="@string/text_personal_information"
+            android:text="@string/text_salesman_data"
             android:textColor="#FFFFFF"
             android:textSize="15sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:orientation="horizontal"
             android:textDirection="rtl">
 
             <TableLayout
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="15"
-                android:paddingEnd="15dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
                 android:textDirection="rtl"
                 tools:ignore="RtlSymmetry">
 
@@ -102,20 +101,16 @@
                         android:id="@+id/lblId"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_gravity="end"
                         android:layout_weight="1"
-                        android:gravity="start"
                         android:text="@string/text_salesman_id_label"
-                        android:textSize="20sp" />
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/txtId"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_gravity="end"
-                        android:layout_weight="5"
-                        android:gravity="start"
-                        android:textSize="18sp" />
+                        android:layout_weight="3"
+                        android:textSize="15sp" />
                 </TableRow>
 
                 <TableRow
@@ -126,20 +121,16 @@
                         android:id="@+id/lblName"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_gravity="end"
                         android:layout_weight="1"
-                        android:gravity="start"
                         android:text="@string/text_name_label"
-                        android:textSize="20sp" />
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/txtName"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_gravity="end"
-                        android:layout_weight="5"
-                        android:gravity="start"
-                        android:textSize="18sp" />
+                        android:layout_weight="3"
+                        android:textSize="15sp" />
                 </TableRow>
 
                 <TableRow
@@ -150,21 +141,16 @@
                         android:id="@+id/lblHiringDate"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_gravity="end"
                         android:layout_weight="1"
-                        android:gravity="start"
-                        android:text="@string/text_registering_date_label"
-                        android:textSize="20sp" />
+                        android:text="@string/text_hiring_date_label"
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/txtHiringDate"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_gravity="right"
-                        android:layout_weight="5"
-                        android:gravity="start"
-                        android:textSize="18sp"
-                        tools:ignore="RtlHardcoded,SpUsage" />
+                        android:layout_weight="3"
+                        android:textSize="15sp" />
                 </TableRow>
             </TableLayout>
 
@@ -172,7 +158,7 @@
                 android:id="@+id/imgSalesman"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:paddingStart="10dp"
+                android:layout_weight="1"
                 android:src="@android:drawable/sym_def_app_icon"
                 tools:ignore="ContentDescription,RtlSymmetry" />
         </LinearLayout>
@@ -181,68 +167,55 @@
             android:id="@+id/lblSalesAndCommissions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:background="#02574a"
             android:padding="10dp"
             android:text="@string/text_sales_details_label"
             android:textColor="#FFFFFF"
             android:textSize="15sp" />
 
-        <TableLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingEnd="15dp"
+            android:layout_margin="8dp"
+            android:orientation="horizontal"
             android:textDirection="rtl"
             tools:ignore="RtlSymmetry">
 
-            <TableRow>
+            <TextView
+                android:id="@+id/lblYear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="@string/text_year_label"
+                android:textSize="15sp" />
 
-                <TextView
-                    android:id="@+id/lblYear"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="end"
-                    android:layout_weight="2"
-                    android:text="@string/text_year_label"
-                    android:textSize="20sp" />
+            <TextView
+                android:id="@+id/txtYear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp" />
 
-                <TextView
-                    android:id="@+id/txtYear"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="end"
-                    android:layout_weight="3"
-                    android:textSize="18sp" />
-            </TableRow>
+            <TextView
+                android:id="@+id/lblMonth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/text_month_label"
+                android:textSize="15sp" />
 
-            <TableRow>
-
-                <TextView
-                    android:id="@+id/lblMonth"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="end"
-                    android:layout_weight="2"
-                    android:text="@string/text_month_label"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/txtMonth"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="end"
-                    android:layout_weight="3"
-                    android:textSize="18sp" />
-            </TableRow>
-        </TableLayout>
+            <TextView
+                android:id="@+id/txtMonth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp" />
+        </LinearLayout>
 
         <TableLayout
             android:id="@+id/tableRegionsSales"
             android:layout_width="320dp"
             android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:paddingEnd="20dp"
-            android:paddingBottom="20dp"
+            android:padding="8dp"
             android:stretchColumns="*"
             android:textAlignment="center"
             tools:ignore="RtlSymmetry" />

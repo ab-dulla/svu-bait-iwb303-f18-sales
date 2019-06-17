@@ -1,16 +1,223 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layoutDirection="rtl"
+    android:textDirection="rtl"
     tools:context=".SalesActivity">
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sales"
-        tools:layout_editor_absoluteX="188dp"
-        tools:layout_editor_absoluteY="356dp" />
-</android.support.constraint.ConstraintLayout>
+        android:orientation="vertical"
+        android:textDirection="rtl"
+        tools:context=".SalesActivity">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#02574a"
+            android:padding="10dp"
+            android:text="@string/text_search_criteria"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp" />
+
+        <Spinner
+            android:id="@+id/spinnerSalesmen"
+            style="@style/spinner_style"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:spinnerMode="dropdown"
+            android:textDirection="rtl" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:textDirection="rtl">
+
+            <Spinner
+                android:id="@+id/spinnerMonths"
+                style="@style/spinner_style"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="2"
+                android:layoutDirection="rtl"
+                android:spinnerMode="dropdown"
+                android:textDirection="rtl" />
+
+            <Spinner
+                android:id="@+id/spinnerYears"
+                style="@style/spinner_style"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="2"
+                android:layoutDirection="rtl"
+                android:spinnerMode="dropdown"
+                android:textDirection="rtl" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            android:background="#02574a"
+            android:text="@string/text_search"
+            android:textColor="@android:color/white"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/txtHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#02574a"
+            android:padding="10dp"
+            android:text="@string/text_salesman_data"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="horizontal"
+            android:textDirection="rtl">
+
+            <TableLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:textDirection="rtl"
+                tools:ignore="RtlSymmetry">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/lblId"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/text_salesman_id_label"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/txtId"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:textSize="15sp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/lblName"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/text_name_label"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/txtName"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:textSize="15sp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/lblHiringDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/text_hiring_date_label"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/txtHiringDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:textSize="15sp" />
+                </TableRow>
+            </TableLayout>
+
+            <ImageView
+                android:id="@+id/imgSalesman"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:src="@android:drawable/sym_def_app_icon"
+                tools:ignore="ContentDescription,RtlSymmetry" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/lblSalesAndCommissions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#02574a"
+            android:padding="10dp"
+            android:text="@string/text_sales_details_label"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="horizontal"
+            android:textDirection="rtl"
+            tools:ignore="RtlSymmetry">
+
+            <TextView
+                android:id="@+id/lblYear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="@string/text_year_label"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/txtYear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/lblMonth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/text_month_label"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/txtMonth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <TableLayout
+            android:id="@+id/tableRegionsSales"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:stretchColumns="*"
+            android:textAlignment="center"
+            tools:ignore="RtlSymmetry" />
+    </LinearLayout>
+</ScrollView>

@@ -4,20 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layoutDirection="rtl"
-    android:textDirection="rtl"
-    tools:context=".salesmen.management.AddSalesmanFragment">
+    tools:context=".salesmen.management.ModifyOrDeleteSalesmanFragment">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+        <Spinner
+            android:id="@+id/spinner_modify_salesmen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layoutDirection="rtl"
+            android:textDirection="rtl"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/image"
             android:layout_width="160dp"
             android:layout_height="160dp"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
             android:adjustViewBounds="true"
             android:background="#F5F5F8"
@@ -28,15 +39,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.502"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/spinner_modify_salesmen" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_upload_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:layoutDirection="ltr"
-            android:src="@android:drawable/ic_menu_camera"
+            android:src="@android:drawable/ic_menu_edit"
             app:layout_constraintBottom_toBottomOf="@+id/image"
             app:layout_constraintEnd_toEndOf="@+id/image"
             app:layout_constraintHorizontal_bias="1.0"
@@ -46,18 +56,37 @@
             tools:ignore="KeyboardInaccessibleWidget" />
 
         <EditText
+            android:id="@+id/editText_salesman_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:ems="10"
+            android:gravity="center"
+            android:hint="@string/text_salesman_id"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image"
+            tools:ignore="Autofill" />
+
+        <EditText
             android:id="@+id/editText_full_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:ems="10"
+            android:gravity="center"
             android:hint="@string/text_full_name"
             android:inputType="textPersonName"
+            android:layoutDirection="rtl"
+            android:textDirection="rtl"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/image"
+            app:layout_constraintTop_toBottomOf="@+id/editText_salesman_id"
             tools:ignore="Autofill" />
 
         <Spinner
@@ -67,6 +96,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
+            android:layoutDirection="rtl"
+            android:textDirection="rtl"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editText_full_name" />
@@ -78,24 +109,40 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
+            android:clickable="false"
+            android:enabled="true"
             android:focusable="false"
-            android:hint="@string/text_hiring_date"
+            android:hint="@string/text_hiring_date_modify"
+            android:layoutDirection="rtl"
+            android:textDirection="rtl"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/spinner_region"
             tools:ignore="Autofill,TextFields" />
 
         <Button
-            android:id="@+id/button_add_salesman"
+            android:id="@+id/button_modify_salesman"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/text_add_salesman"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/text_modify_salesman"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editText_hiring_date" />
-    </android.support.constraint.ConstraintLayout>
 
+        <Button
+            android:id="@+id/button_delete_salesman"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/text_delete_salesman"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
 </ScrollView>

@@ -14,7 +14,7 @@ import org.svuonline.f18sales.model.Salesman;
 
 import java.util.ArrayList;
 
-class SalesmenSpinnerArrayAdapter extends ArrayAdapter<Salesman> {
+public class SalesmenSpinnerArrayAdapter extends ArrayAdapter<Salesman> {
 
     public SalesmenSpinnerArrayAdapter(Context context, ArrayList<Salesman> salesmenList) {
         super(context, 0, salesmenList);

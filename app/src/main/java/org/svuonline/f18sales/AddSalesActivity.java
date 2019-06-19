@@ -119,7 +119,8 @@ public class AddSalesActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private boolean ValidateInputs() {
-        return spinnerRegions.getSelectedItemPosition() != 0 && spinnerSalesmen.getSelectedItemPosition() != 0 &&
+        return spinnerRegions.getSelectedItemPosition() != 0 &&
+                spinnerSalesmen.getSelectedItemPosition() != 0 &&
                 !isEmpty(txtSaleDate.getText().toString()) &&
                 !isEmpty(txtAmount.getText().toString());
     }
@@ -137,7 +138,7 @@ public class AddSalesActivity extends AppCompatActivity implements View.OnClickL
 
     private void fillRegions() {
         ArrayList<Region> regionsList = dbHelper.getAllRegions();
-        regionsList.add(0,new Region(-1, "-- اسم المنطقة --"));
+        regionsList.add(0, new Region(-1, "-- اسم المنطقة --"));
         RegionSpinnerArrayAdapter regionAdapter = new RegionSpinnerArrayAdapter(this, regionsList);
         spinnerRegions.setAdapter(regionAdapter);
 

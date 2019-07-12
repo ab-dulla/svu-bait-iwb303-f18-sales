@@ -14,5 +14,5 @@
 
 Android Studio version 3.4.1
 
-تجدزن ملف نص الوظيفة في الملف
+تجدون ملف نص الوظيفة في الملف
 BAIT_IWB303_MuhammadMazenALmustafa_F18_HW.pdf
